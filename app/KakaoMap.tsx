@@ -10,8 +10,8 @@ const KakaoMap = () => {
   useEffect(() => {
     if (isLoaded && palette.current) {
       new daum.maps.Map(palette.current, {
-        center: new daum.maps.LatLng(33.45071, 126.570667),
-        level: 3,
+        center: new daum.maps.LatLng(37.543341, 127.052727),
+        level: 4,
       });
     }
   }, [isLoaded]);
@@ -25,7 +25,7 @@ const KakaoMap = () => {
           });
         }}
       />
-      <div ref={palette} style={{ width: "500px", height: "400px" }}></div>
+      <div ref={palette} className="w-full" style={{ height: "600px" }}></div>
     </>
   );
 };
