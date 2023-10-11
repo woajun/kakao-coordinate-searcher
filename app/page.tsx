@@ -4,15 +4,21 @@ import { MouseEventHandler, useState } from 'react';
 import KakaoMap, { addMarker, addOverlay } from './KakaoMap';
 
 function Overlay(position: kakao.maps.LatLng) {
-  const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleOverlayMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
     e.stopPropagation();
+  };
+
+  const handleCopyClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    const text = `{latitude:${position.getLat()},longitude:${position.getLng()}}`;
+    await navigator.clipboard.writeText(text);
+    console.log('copied:', text);
   };
 
   return (
     <div className="arrow absolute bottom-0 translate-x-[-50%] z-50 pb-[9px]">
       <div
         className="px-3 py-2 bg-white border-2 cursor-auto rounded-xl"
-        onMouseDown={handleClick}
+        onMouseDown={handleOverlayMouseDown}
       >
         <h1 className="font-bold text-center">현위치</h1>
         <div className="pt-2">
@@ -24,7 +30,10 @@ function Overlay(position: kakao.maps.LatLng) {
           <span>{position.getLng()}</span>
         </div>
         <div className="flex justify-center pt-2">
-          <button className="px-4 py-1 font-bold rounded-md bg-amber-300 hover:bg-amber-400 active:bg-amber-300">
+          <button
+            onClick={handleCopyClick}
+            className="px-4 py-1 font-bold rounded-md bg-amber-300 hover:bg-amber-400 active:bg-amber-300"
+          >
             복사
           </button>
         </div>
@@ -35,6 +44,7 @@ function Overlay(position: kakao.maps.LatLng) {
 
 export default function Home() {
   const [overlay, setOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
+  const [showSnakbar, setShowSnakbar] = useState(false);
 
   const handleMapClick = (e: KakaoMapClickEvent, map: kakao.maps.Map) => {
     overlay?.setMap(null);
@@ -43,6 +53,7 @@ export default function Home() {
 
   return (
     <>
+      <div className={`${showSnakbar&&'block'} hidden fixed z-50 px-5 py-2 text-white bg-blue-700 rounded-md left-1/2 top-5 opacity-90`}>복사 완료 ✔</div>
       <h1>성수 팝업</h1>
       <KakaoMap handleMapClick={handleMapClick} />
     </>
