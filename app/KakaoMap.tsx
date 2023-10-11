@@ -2,6 +2,7 @@
 
 import Script from 'next/script';
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { createRoot } from 'react-dom/client';
 
 type Props = {
   handleMapClick?: (e: KakaoMapClickEvent, map: kakao.maps.Map) => void;
@@ -56,3 +57,14 @@ const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
 };
 
 export default KakaoMap;
+
+export function addMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
+  return new kakao.maps.Marker({map, position})
+}
+
+export function addOverlay(map: kakao.maps.Map, position: kakao.maps.LatLng, jsxElement: JSX.Element) {
+  const content = document.createElement('div');
+  const root = createRoot(content);
+  root.render(jsxElement)
+  return new kakao.maps.CustomOverlay({content, map, position})
+}
