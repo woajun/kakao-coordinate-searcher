@@ -5,6 +5,8 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import { usePlaceSearchList } from '../stores/PlaceSearchList.tsx/PlaceSearchListContext';
+import Overlay from './Overlay';
+import { useMouseOverPlace, useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 
 export function addMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -61,12 +63,37 @@ const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
   const pList = usePlaceSearchList();
 
   const [markers, setMarkers] = useState<kakao.maps.Marker[]>([])
+
+  const moPlaceDispathcer = useMouseOverPlaceDispatch();
+  const moPlace = useMouseOverPlace();
+
+  const [moOverlay, setOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   useEffect(() => {
-    if (map && pList) {
+    if(!map || !moPlace) return;
+    moOverlay?.setMap(null);
+    const p = new kakao.maps.LatLng(Number(moPlace.y), Number(moPlace.x));
+    setOverlay(addOverlay(map, p, <Overlay position={p}/>))
+  }, [moPlace])
+
+  useEffect(() => {
+    if (map && pList && moPlaceDispathcer) {
       markers.forEach((m) => m.setMap(null));
       const ms = pList.data.map((e) => {
         const m = addMarker(map, new kakao.maps.LatLng(Number(e.y), Number(e.x)))
-        m.setTitle('aaaa')
+        kakao.maps.event.addListener(m, 'mouseover', function () {
+          moPlaceDispathcer({
+            type: 'set',
+            payload: {
+              place: e
+            }
+          })
+        });
+
+        kakao.maps.event.addListener(m, 'mouseout', function () {
+          moPlaceDispathcer({
+            type: 'clear'
+          })
+        });
         return m;
       }
       );
