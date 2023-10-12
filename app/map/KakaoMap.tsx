@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import { usePlaceSearchList } from '../stores/PlaceSearchList.tsx/PlaceSearchListContext';
-import Overlay from './Overlay';
+import MouseOverOverlay from './MouseOverOverlay';
 import { useMouseOverPlace, useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 
 export function addMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
@@ -72,7 +72,7 @@ const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
     if(!map || !moPlace) return;
     moOverlay?.setMap(null);
     const p = new kakao.maps.LatLng(Number(moPlace.y), Number(moPlace.x));
-    setOverlay(addOverlay(map, p, <Overlay position={p}/>))
+    setOverlay(addOverlay(map, p, <MouseOverOverlay position={p} place={moPlace}/>))
   }, [moPlace])
 
   useEffect(() => {
