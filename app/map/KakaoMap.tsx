@@ -44,7 +44,7 @@ const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
   return (
     <>
       <Script
-        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=105b185094e8d46221227fd3ecff6497&autoload=false"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=105b185094e8d46221227fd3ecff6497&autoload=false&libraries=services"
         onReady={() => {
           kakao.maps.load(() => {
             setIsLoaded(true);

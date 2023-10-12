@@ -5,6 +5,7 @@ import KakaoMap, { addOverlay } from './map/KakaoMap';
 import Nav from './layout/Nav';
 import Link from 'next/link';
 import Drawer from './layout/Drawer';
+import PlaceList from './places/PlaceList';
 
 function Overlay(position: kakao.maps.LatLng) {
   const handleOverlayMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -72,7 +73,7 @@ export default function Home({searchParams}: Props) {
         </div>
         <div className="relative grow">
           <Drawer drawer={drawer === 'true'}>
-            <div>list</div>
+            <PlaceList />
           </Drawer>
           <KakaoMap handleMapClick={handleMapClick} />
         </div>
