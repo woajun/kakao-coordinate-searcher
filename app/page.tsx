@@ -3,50 +3,11 @@
 import { MouseEventHandler, useState } from 'react';
 import KakaoMap, { addOverlay } from './map/KakaoMap';
 import Nav from './layout/Nav';
-import Link from 'next/link';
 import Drawer from './layout/Drawer';
 import PlaceList from './places/PlaceList';
 import { IsLoadedMapProvider } from './stores/IsLoadedMap/IsLoadedMapContext';
 import { PlaceSearchListProvider } from './stores/PlaceSearchList.tsx/PlaceSearchListContext';
-
-function Overlay(position: kakao.maps.LatLng) {
-  const handleOverlayMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
-    e.stopPropagation();
-  };
-
-  const handleCopyClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
-    const text = `{latitude:${position.getLat()},longitude:${position.getLng()}}`;
-    await navigator.clipboard.writeText(text);
-    console.log('copied:', text);
-  };
-
-  return (
-    <div className="arrow absolute bottom-0 translate-x-[-50%] z-50 pb-[9px]">
-      <div
-        className="px-3 py-2 bg-white border-2 cursor-auto rounded-xl"
-        onMouseDown={handleOverlayMouseDown}
-      >
-        <h1 className="font-bold text-center">현위치</h1>
-        <div className="pt-2">
-          <div className="font-bold w-30">위도(latitude)</div>
-          <span>{position.getLat()}</span>
-        </div>
-        <div>
-          <div className="font-bold w-30">경도(longitude)</div>
-          <span>{position.getLng()}</span>
-        </div>
-        <div className="flex justify-center pt-2">
-          <button
-            onClick={handleCopyClick}
-            className="px-4 py-1 font-bold rounded-md bg-amber-300 hover:bg-amber-400 active:bg-amber-300"
-          >
-            복사
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+import Overlay from './map/Overlay';
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -58,7 +19,7 @@ export default function Home({ searchParams }: Props) {
 
   const handleMapClick = (e: KakaoMapClickEvent, map: kakao.maps.Map) => {
     overlay?.setMap(null);
-    setOverlay(addOverlay(map, e.latLng, Overlay(e.latLng)));
+    setOverlay(addOverlay(map, e.latLng, <Overlay position={e.latLng} />));
   };
 
   const { drawer } = searchParams;

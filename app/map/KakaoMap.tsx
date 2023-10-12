@@ -1,9 +1,25 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import Script from 'next/script';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
+import { usePlaceSearchList } from '../stores/PlaceSearchList.tsx/PlaceSearchListContext';
+
+export function addMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
+  return new kakao.maps.Marker({ map, position });
+}
+
+export function addOverlay(
+  map: kakao.maps.Map,
+  position: kakao.maps.LatLng,
+  jsxElement: JSX.Element
+) {
+  const content = document.createElement('div');
+  const root = createRoot(content);
+  root.render(jsxElement);
+  return new kakao.maps.CustomOverlay({ content, map, position });
+}
 
 type Props = {
   handleMapClick?: (e: KakaoMapClickEvent, map: kakao.maps.Map) => void;
@@ -42,6 +58,22 @@ const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
     }
   }, [mapClickHandler, map]);
 
+  const pList = usePlaceSearchList();
+
+  const [markers, setMarkers] = useState<kakao.maps.Marker[]>([])
+  useEffect(() => {
+    if (map && pList) {
+      markers.forEach((m) => m.setMap(null));
+      const ms = pList.data.map((e) => {
+        const m = addMarker(map, new kakao.maps.LatLng(Number(e.y), Number(e.x)))
+        m.setTitle('aaaa')
+        return m;
+      }
+      );
+      setMarkers(ms);
+    }
+  }, [pList])
+
   return (
     <>
       <div ref={palette} className="w-full h-full"></div>
@@ -50,14 +82,3 @@ const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
 };
 
 export default KakaoMap;
-
-export function addMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
-  return new kakao.maps.Marker({map, position})
-}
-
-export function addOverlay(map: kakao.maps.Map, position: kakao.maps.LatLng, jsxElement: JSX.Element) {
-  const content = document.createElement('div');
-  const root = createRoot(content);
-  root.render(jsxElement)
-  return new kakao.maps.CustomOverlay({content, map, position})
-}
