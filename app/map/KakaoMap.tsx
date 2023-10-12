@@ -3,7 +3,7 @@
 import Script from 'next/script';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
-import { useIsLoadedMap } from './IsLoadedMapContext';
+import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 
 type Props = {
   handleMapClick?: (e: KakaoMapClickEvent, map: kakao.maps.Map) => void;
