@@ -1,15 +1,14 @@
 import Link from 'next/link';
+import { ReactNode } from 'react';
 
 type Props = {
   drawer: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export default function Drawer({ drawer, children }: Props) {
   return (
-    <div
-      className={`${drawer ? 'z-10' : ''} w-full h-full absolute flex`}
-    >
+    <div className={`${drawer ? 'z-10' : ''} w-full h-full absolute flex`}>
       <div
         className={`${
           !drawer && '-translate-x-full'

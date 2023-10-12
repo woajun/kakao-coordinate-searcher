@@ -3,6 +3,7 @@
 import Script from 'next/script';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
+import { useIsLoadedMap } from './IsLoadedMapContext';
 
 type Props = {
   handleMapClick?: (e: KakaoMapClickEvent, map: kakao.maps.Map) => void;
@@ -10,8 +11,8 @@ type Props = {
 
 const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
   const palette = useRef<HTMLDivElement | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
+  const isLoaded = useIsLoadedMap();
 
   useEffect(() => {
     if (isLoaded && palette.current) {
@@ -43,14 +44,6 @@ const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
 
   return (
     <>
-      <Script
-        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=105b185094e8d46221227fd3ecff6497&autoload=false&libraries=services"
-        onReady={() => {
-          kakao.maps.load(() => {
-            setIsLoaded(true);
-          });
-        }}
-      />
       <div ref={palette} className="w-full h-full"></div>
     </>
   );

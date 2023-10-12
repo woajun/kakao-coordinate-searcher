@@ -6,6 +6,7 @@ import Nav from './layout/Nav';
 import Link from 'next/link';
 import Drawer from './layout/Drawer';
 import PlaceList from './places/PlaceList';
+import { IsLoadedMapProvider } from './map/IsLoadedMapContext';
 
 function Overlay(position: kakao.maps.LatLng) {
   const handleOverlayMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -50,7 +51,7 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export default function Home({searchParams}: Props) {
+export default function Home({ searchParams }: Props) {
   const [overlay, setOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   const [showSnakbar, setShowSnakbar] = useState(false);
 
@@ -62,22 +63,24 @@ export default function Home({searchParams}: Props) {
   const { drawer } = searchParams;
   return (
     <>
-      <div className="flex flex-col w-screen h-screen">
-        <Nav drawer={drawer === 'true'} />
-        <div
-          className={`${
-            showSnakbar && 'block'
-          } hidden fixed z-50 px-5 py-2 text-white bg-blue-700 rounded-md left-1/2 top-5 opacity-90`}
-        >
-          복사 완료 ✔
+      <IsLoadedMapProvider>
+        <div className="flex flex-col w-screen h-screen">
+          <Nav drawer={drawer === 'true'} />
+          <div
+            className={`${
+              showSnakbar && 'block'
+            } hidden fixed z-50 px-5 py-2 text-white bg-blue-700 rounded-md left-1/2 top-5 opacity-90`}
+          >
+            복사 완료 ✔
+          </div>
+          <div className="relative grow">
+            <Drawer drawer={drawer === 'true'}>
+              <PlaceList />
+            </Drawer>
+            <KakaoMap handleMapClick={handleMapClick} />
+          </div>
         </div>
-        <div className="relative grow">
-          <Drawer drawer={drawer === 'true'}>
-            <PlaceList />
-          </Drawer>
-          <KakaoMap handleMapClick={handleMapClick} />
-        </div>
-      </div>
+      </IsLoadedMapProvider>
     </>
   );
 }
