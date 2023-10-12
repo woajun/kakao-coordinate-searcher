@@ -38,7 +38,9 @@ export default function PlaceList() {
       />
       {
         pList && pList.data.map((e) => {
-          return <div key={e.id}>
+          return <div key={e.id} onMouseOver={() => {
+            console.log('bbb')
+          }}>
             {e.place_name}
           </div>
         })

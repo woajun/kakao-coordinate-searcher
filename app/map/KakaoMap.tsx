@@ -69,10 +69,16 @@ const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
 
   const [moOverlay, setOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   useEffect(() => {
-    if(!map || !moPlace) return;
+    if(!map) return;
     moOverlay?.setMap(null);
-    const p = new kakao.maps.LatLng(Number(moPlace.y), Number(moPlace.x));
-    setOverlay(addOverlay(map, p, <MouseOverOverlay position={p} place={moPlace}/>))
+    if (moPlace && moPlaceDispathcer) {
+      const p = new kakao.maps.LatLng(Number(moPlace.y), Number(moPlace.x));
+      setOverlay(addOverlay(map, p, <MouseOverOverlay position={p} place={moPlace} handleMouseLeave={() => {
+        moPlaceDispathcer({
+          type: 'clear'
+        })
+      }}/>))
+    }
   }, [moPlace])
 
   useEffect(() => {
@@ -86,12 +92,6 @@ const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
             payload: {
               place: e
             }
-          })
-        });
-
-        kakao.maps.event.addListener(m, 'mouseout', function () {
-          moPlaceDispathcer({
-            type: 'clear'
           })
         });
         return m;
