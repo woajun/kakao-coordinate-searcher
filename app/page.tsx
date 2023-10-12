@@ -1,7 +1,10 @@
 'use client';
 
 import { MouseEventHandler, useState } from 'react';
-import KakaoMap, { addMarker, addOverlay } from './KakaoMap';
+import KakaoMap, { addOverlay } from './map/KakaoMap';
+import Nav from './layout/Nav';
+import Link from 'next/link';
+import Drawer from './layout/Drawer';
 
 function Overlay(position: kakao.maps.LatLng) {
   const handleOverlayMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -42,7 +45,11 @@ function Overlay(position: kakao.maps.LatLng) {
   );
 }
 
-export default function Home() {
+type Props = {
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export default function Home({searchParams}: Props) {
   const [overlay, setOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   const [showSnakbar, setShowSnakbar] = useState(false);
 
@@ -51,11 +58,25 @@ export default function Home() {
     setOverlay(addOverlay(map, e.latLng, Overlay(e.latLng)));
   };
 
+  const { drawer } = searchParams;
   return (
     <>
-      <div className={`${showSnakbar&&'block'} hidden fixed z-50 px-5 py-2 text-white bg-blue-700 rounded-md left-1/2 top-5 opacity-90`}>복사 완료 ✔</div>
-      <h1>성수 팝업</h1>
-      <KakaoMap handleMapClick={handleMapClick} />
+      <div className="flex flex-col w-screen h-screen">
+        <Nav drawer={drawer === 'true'} />
+        <div
+          className={`${
+            showSnakbar && 'block'
+          } hidden fixed z-50 px-5 py-2 text-white bg-blue-700 rounded-md left-1/2 top-5 opacity-90`}
+        >
+          복사 완료 ✔
+        </div>
+        <div className="relative grow">
+          <Drawer drawer={drawer === 'true'}>
+            <div>list</div>
+          </Drawer>
+          <KakaoMap handleMapClick={handleMapClick} />
+        </div>
+      </div>
     </>
   );
 }

@@ -51,7 +51,7 @@ const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
           });
         }}
       />
-      <div ref={palette} className="w-full" style={{ height: '600px' }}></div>
+      <div ref={palette} className="w-full h-full"></div>
     </>
   );
 };
