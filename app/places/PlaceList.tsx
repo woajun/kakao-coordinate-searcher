@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import { usePlaceSearchList, usePlaceSearchListDispatch } from '../stores/PlaceSearchList.tsx/PlaceSearchListContext';
+import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 
 export default function PlaceList() {
   const isLoaded = useIsLoadedMap();
   const [ps, setPs] = useState<kakao.maps.services.Places>();
   const [keyword, setKeyword] = useState('');
-  const pListDispatcher = usePlaceSearchListDispatch();
+  const pListDispatch = usePlaceSearchListDispatch();
   const pList = usePlaceSearchList();
+  const moPlaceDispatch = useMouseOverPlaceDispatch();
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -15,10 +17,10 @@ export default function PlaceList() {
   }, [isLoaded]);
 
   useEffect(() => {
-    if (!ps || !pListDispatcher) return;
+    if (!ps || !pListDispatch) return;
     ps.keywordSearch(keyword, (data, status, pagination) => {
       if (status === kakao.maps.services.Status.OK) {
-        pListDispatcher({
+        pListDispatch({
           type: 'set',
           payload: {
             data,
@@ -27,7 +29,7 @@ export default function PlaceList() {
         });
       }
     });
-  }, [keyword, ps, pListDispatcher]);
+  }, [keyword, ps, pListDispatch]);
   return (
     <div>
       <input
@@ -39,7 +41,8 @@ export default function PlaceList() {
       {
         pList && pList.data.map((e) => {
           return <div key={e.id} onMouseOver={() => {
-            console.log('bbb')
+            if(!moPlaceDispatch)return;
+            moPlaceDispatch({type: 'set', payload: {place: e}})
           }}>
             {e.place_name}
           </div>
