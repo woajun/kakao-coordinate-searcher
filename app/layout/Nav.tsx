@@ -6,8 +6,8 @@ type Props = {
 
 export default function Nav({drawer}: Props) {
   return (
-    <nav className="relative flex">
-      <div>
+    <nav className="relative flex h-8">
+      <div className="lg:hidden">
         <Link href={drawer ? "?drawer=false" : "?drawer=true"} className="flex">
           <svg
             xmlns="http://www.w3.org/2000/svg"

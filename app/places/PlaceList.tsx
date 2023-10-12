@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
-import { usePlaceSearchList, usePlaceSearchListDispatch } from '../stores/PlaceSearchList.tsx/PlaceSearchListContext';
+import {
+  usePlaceSearchList,
+  usePlaceSearchListDispatch,
+} from '../stores/PlaceSearchList.tsx/PlaceSearchListContext';
 import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 
 export default function PlaceList() {
@@ -38,16 +41,24 @@ export default function PlaceList() {
           setKeyword(e.target.value);
         }}
       />
-      {
-        pList && pList.data.map((e) => {
-          return <div key={e.id} onMouseOver={() => {
-            if(!moPlaceDispatch)return;
-            moPlaceDispatch({type: 'set', payload: {place: e}})
-          }}>
-            {e.place_name}
-          </div>
-        })
-      }
+      {pList &&
+        pList.data.map((e) => {
+          return (
+            <div
+              key={e.id}
+              onMouseOver={() => {
+                if (!moPlaceDispatch) return;
+                moPlaceDispatch({ type: 'set', payload: { place: e } });
+              }}
+              onMouseLeave={() => {
+                if (!moPlaceDispatch) return;
+                moPlaceDispatch({ type: 'clear' });
+              }}
+            >
+              {e.place_name}
+            </div>
+          );
+        })}
     </div>
   );
 }
