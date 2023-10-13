@@ -35,13 +35,12 @@ export default function PlaceList() {
     });
   }, [keyword, ps, pListDispatch]);
 
-  console.log(pList);
   return (
-    <div className="py-3 px-2 flex flex-col justify-between h-full">
+    <div className="flex flex-col justify-between h-full px-2 py-3">
       <div>
         <input
           type="text"
-          className="w-full border rounded-md px-2 py-2"
+          className="w-full px-2 py-2 border rounded-md"
           onChange={(e) => {
             setKeyword(e.target.value);
           }}
@@ -72,8 +71,8 @@ export default function PlaceList() {
       </div>
       <div className="flex justify-center pb-5">
         <Pagination 
-          currentPage={pList?.pagination.current ?? -1} 
-          totalPage={pList?.pagination.last ?? -1}
+          currentPage={pList?.pagination.current ?? 1} 
+          totalPage={pList?.pagination.last ?? 1}
           handlePageClick={(n) => {
             pList?.pagination.gotoPage(n);
           }}

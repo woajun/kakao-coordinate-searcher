@@ -42,22 +42,30 @@ function RightArrowSvg() {
 
 type PageButtonProps = {
   children: ReactNode;
-  state?: 'active' | 'disable' | 'normal';
+  state?: 'active' | 'disabled' | 'normal';
   className?: string;
+  onClick?: () => void;
 };
 
-function PageButton({ children, state = 'normal', className }: PageButtonProps) {
+function PageButton({
+  children,
+  state = 'normal',
+  className,
+  onClick,
+}: PageButtonProps) {
   return (
     <li>
-      <a
-        href="#"
+      <button
+        onClick={() => {
+          if (state === 'normal' && onClick) onClick();
+        }}
         className={`${className} 
         ${
           state === 'active' &&
           'z-10 flex items-center justify-center px-3 h-8 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700'
         }
         ${
-          state === 'disable' &&
+          state === 'disabled' &&
           'flex items-center justify-center px-3 h-8 leading-tight text-gray-300 bg-white border border-gray-300 cursor-default'
         }
         ${
@@ -67,7 +75,7 @@ function PageButton({ children, state = 'normal', className }: PageButtonProps) 
         `}
       >
         {children}
-      </a>
+      </button>
     </li>
   );
 }
@@ -87,21 +95,43 @@ export default function Pagination({
   handlePrevClick,
   handleNextClick,
 }: Props) {
+  const pageButtons = [];
+  const min = Math.max(1, currentPage - 2);
+
+  for (let i = min; i <= min + 4; i++) {
+    let state: 'normal' | 'active' | 'disabled' = 'normal';
+    if (i === currentPage) state = 'active';
+    if (i > totalPage) state = 'disabled';
+    pageButtons.push(
+      <PageButton
+        key={i}
+        state={state}
+        onClick={() => handlePageClick(i)}
+      >
+        {i}
+      </PageButton>
+    );
+  }
+
   return (
     <nav aria-label="Page navigation example">
       <ul className="flex items-center h-8 -space-x-px text-sm">
-        <PageButton className="ml-0 rounded-l-lg">
+        <PageButton
+          className="ml-0 rounded-l-lg"
+          state={currentPage === 1 ? 'disabled' : 'normal'}
+          onClick={handlePrevClick}
+        >
           <span className="sr-only">Previous</span>
           <LeftArrowSvg />
         </PageButton>
-        <PageButton>1</PageButton>
-        <PageButton>2</PageButton>
-        <PageButton state="active">3</PageButton>
-        <PageButton>4</PageButton>
-        <PageButton state="disable">5</PageButton>
-        <PageButton className='rounded-r-lg'>
-            <span className="sr-only">Next</span>
-            <RightArrowSvg />
+        {pageButtons}
+        <PageButton
+          className="rounded-r-lg"
+          state={totalPage === currentPage ? 'disabled' : 'normal'}
+          onClick={handleNextClick}
+        >
+          <span className="sr-only">Next</span>
+          <RightArrowSvg />
         </PageButton>
       </ul>
     </nav>
