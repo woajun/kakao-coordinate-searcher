@@ -71,7 +71,19 @@ export default function PlaceList() {
         </div>
       </div>
       <div className="flex justify-center pb-5">
-        <Pagination p={pList?.pagination} />
+        <Pagination 
+          currentPage={pList?.pagination.current ?? -1} 
+          totalPage={pList?.pagination.last ?? -1}
+          handlePageClick={(n) => {
+            pList?.pagination.gotoPage(n);
+          }}
+          handleNextClick={() => {
+            pList?.pagination.nextPage()
+          }}
+          handlePrevClick={() => {
+            pList?.pagination.prevPage()
+          }}
+        />
       </div>
     </div>
   );
