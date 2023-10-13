@@ -57,7 +57,7 @@ export default function PlaceList() {
           <div className="text-end">
             검색결과: {pList?.pagination.totalCount ?? 0} 건
           </div>
-          {pList &&
+          {pList ?
             pList.data.map((e) => {
               return (
                 <div
@@ -74,7 +74,10 @@ export default function PlaceList() {
                   <TextHighligher keyword={keyword} text={e.place_name} />
                 </div>
               );
-            })}
+            })
+          : 
+            <span className='text-gray-600'>검색결과가 없습니다</span>
+          }
         </div>
       </div>
       <div className="flex justify-center pb-5">
