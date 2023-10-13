@@ -9,6 +9,7 @@ import { IsLoadedMapProvider } from './stores/IsLoadedMap/IsLoadedMapContext';
 import { PlaceSearchListProvider } from './stores/PlaceSearchList.tsx/PlaceSearchListContext';
 import Overlay from './map/Overlay';
 import { MouseOverPlaceProvider } from './stores/MouseOverPlace/MouseOverPlaceContext';
+import { SelectedItemProvider } from './stores/SelectedItem/SelectedItemContext';
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -25,10 +26,10 @@ export default function Home({ searchParams }: Props) {
 
   const { drawer } = searchParams;
   return (
-    <>
-      <IsLoadedMapProvider>
-        <PlaceSearchListProvider>
-          <MouseOverPlaceProvider>
+    <IsLoadedMapProvider>
+      <PlaceSearchListProvider>
+        <MouseOverPlaceProvider>
+          <SelectedItemProvider>
             <div className="flex flex-col w-screen h-screen">
               <Nav drawer={drawer === 'true'} />
               <div
@@ -45,9 +46,9 @@ export default function Home({ searchParams }: Props) {
                 <KakaoMap handleMapClick={handleMapClick} />
               </div>
             </div>
-          </MouseOverPlaceProvider>
-        </PlaceSearchListProvider>
-      </IsLoadedMapProvider>
-    </>
+          </SelectedItemProvider>
+        </MouseOverPlaceProvider>
+      </PlaceSearchListProvider>
+    </IsLoadedMapProvider>
   );
 }
