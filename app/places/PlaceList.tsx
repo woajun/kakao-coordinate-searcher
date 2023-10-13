@@ -5,7 +5,9 @@ import {
   usePlaceSearchListDispatch,
 } from '../stores/PlaceSearchList.tsx/PlaceSearchListContext';
 import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
-import Pagination from './Pagination';
+import Pagination from '../common/Pagination';
+import TextHighligher from '../common/TextHighligher';
+
 
 export default function PlaceList() {
   const isLoaded = useIsLoadedMap();
@@ -63,7 +65,7 @@ export default function PlaceList() {
                     moPlaceDispatch({ type: 'clear' });
                   }}
                 >
-                  {e.place_name}
+                  <TextHighligher keyword={keyword} text={e.place_name} />
                 </div>
               );
             })}
