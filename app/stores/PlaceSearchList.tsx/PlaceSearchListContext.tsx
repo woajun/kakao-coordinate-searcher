@@ -27,6 +27,9 @@ function PlaceSearchListReducer(
         pagination: action.payload.pagination,
       };
     }
+    case 'clear': {
+      return null;
+    }
     default: {
       throw Error('Unknown action');
     }

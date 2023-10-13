@@ -8,7 +8,6 @@ import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPla
 import Pagination from '../common/Pagination';
 import TextHighligher from '../common/TextHighligher';
 
-
 export default function PlaceList() {
   const isLoaded = useIsLoadedMap();
   const [ps, setPs] = useState<kakao.maps.services.Places>();
@@ -25,14 +24,21 @@ export default function PlaceList() {
   useEffect(() => {
     if (!ps || !pListDispatch) return;
     ps.keywordSearch(keyword, (data, status, pagination) => {
-      if (status === kakao.maps.services.Status.OK) {
-        pListDispatch({
-          type: 'set',
-          payload: {
-            data,
-            pagination,
-          },
-        });
+      switch (status) {
+        case kakao.maps.services.Status.OK:
+          pListDispatch({
+            type: 'set',
+            payload: {
+              data,
+              pagination,
+            },
+          });
+          break;
+        default:
+          pListDispatch({
+            type: 'clear',
+          });
+          break;
       }
     });
   }, [keyword, ps, pListDispatch]);
@@ -72,17 +78,17 @@ export default function PlaceList() {
         </div>
       </div>
       <div className="flex justify-center pb-5">
-        <Pagination 
-          currentPage={pList?.pagination.current ?? 1} 
-          totalPage={pList?.pagination.last ?? 1}
+        <Pagination
+          currentPage={pList?.pagination.current ?? 1}
+          totalPage={pList?.pagination.last ?? 0}
           handlePageClick={(n) => {
             pList?.pagination.gotoPage(n);
           }}
           handleNextClick={() => {
-            pList?.pagination.nextPage()
+            pList?.pagination.nextPage();
           }}
           handlePrevClick={() => {
-            pList?.pagination.prevPage()
+            pList?.pagination.prevPage();
           }}
         />
       </div>

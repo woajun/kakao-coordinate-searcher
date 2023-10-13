@@ -127,7 +127,7 @@ export default function Pagination({
         {pageButtons}
         <PageButton
           className="rounded-r-lg"
-          state={totalPage === currentPage ? 'disabled' : 'normal'}
+          state={totalPage <= currentPage ? 'disabled' : 'normal'}
           onClick={handleNextClick}
         >
           <span className="sr-only">Next</span>
