@@ -136,6 +136,22 @@ const KakaoMap = () => {
         복사 완료 ✔
       </div>
       <div ref={palette} className="w-full h-full"></div>
+      <div
+        className={`w-10 h-10 fixed flex justify-center items-center bottom-8 right-6 z-50 text-white bg-blue-700 hover:bg-blue-800 opacity-90 rounded-full`}
+        onClick={() => {
+          navigator.geolocation.getCurrentPosition((e) => {
+            const lat = e.coords.latitude;
+            const lng = e.coords.longitude;
+            map?.panTo(new kakao.maps.LatLng(lat, lng))
+          })
+        }}
+      >
+        <span className="sr-only">Current Location</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+        </svg>
+      </div>
     </>
   );
 };
