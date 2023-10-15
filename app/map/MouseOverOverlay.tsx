@@ -4,10 +4,11 @@ type Props = {
   position: kakao.maps.LatLng;
   place: kakao.maps.services.PlacesSearchResultItem;
   handleMouseLeave: MouseEventHandler<HTMLDivElement>;
+  handleClick: MouseEventHandler<HTMLDivElement>;
 };
 
 
-export default function Overlay({ position, place, handleMouseLeave }: Props) {
+export default function Overlay({ position, place, handleMouseLeave, handleClick }: Props) {
   const handleOverlayMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
     e.stopPropagation();
   };
@@ -16,6 +17,7 @@ export default function Overlay({ position, place, handleMouseLeave }: Props) {
     <div className="arrow absolute bottom-0 -translate-x-1/2 pb-[9px] opacity-90">
       <div
         className="px-3 py-2 bg-white border-2 cursor-auto rounded-xl text-xs"
+        onClick={handleClick}
         onMouseDown={handleOverlayMouseDown}
         onMouseLeave={handleMouseLeave}
       >

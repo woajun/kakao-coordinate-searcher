@@ -69,13 +69,24 @@ const KakaoMap = () => {
   useEffect(() => {
     if(!map) return;
     moOverlay?.setMap(null);
-    if (moPlace && moPlaceDispathcer) {
+    if (moPlace && moPlaceDispathcer && sltItemDispatch) {
       const p = new kakao.maps.LatLng(Number(moPlace.y), Number(moPlace.x));
-      setMoOverlay(addOverlay(map, p, <MouseOverOverlay position={p} place={moPlace} handleMouseLeave={() => {
-        moPlaceDispathcer({
-          type: 'clear'
-        })
-      }}/>))
+      setMoOverlay(addOverlay(map, p, 
+      <MouseOverOverlay 
+        position={p} 
+        place={moPlace} 
+        handleMouseLeave={() => {
+          moPlaceDispathcer({
+            type: 'clear'
+          })
+        }}
+        handleClick={() => {
+          sltItemDispatch({
+            position:p,
+            title: moPlace.place_name,
+          })
+        }}
+      />))
     }
   }, [moPlace])
 
