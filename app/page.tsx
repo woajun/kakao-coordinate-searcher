@@ -15,8 +15,6 @@ type Props = {
 };
 
 export default function Home({ searchParams }: Props) {
-  const [showSnakbar, setShowSnakbar] = useState(false);
-
   const { drawer } = searchParams;
   return (
     <IsLoadedMapProvider>
@@ -25,13 +23,6 @@ export default function Home({ searchParams }: Props) {
           <SelectedItemProvider>
             <div className="flex flex-col w-screen h-screen">
               <Nav drawer={drawer === 'true'} />
-              <div
-                className={`${
-                  showSnakbar && 'block'
-                } hidden fixed z-50 px-5 py-2 text-white bg-blue-700 rounded-md left-1/2 top-5 opacity-90`}
-              >
-                복사 완료 ✔
-              </div>
               <div className="relative grow">
                 <Drawer drawer={drawer === 'true'}>
                   <PlaceList />

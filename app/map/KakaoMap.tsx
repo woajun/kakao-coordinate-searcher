@@ -26,6 +26,8 @@ export function addOverlay(
 }
 
 const KakaoMap = () => {
+  const [showSnakbar, setShowSnakbar] = useState(false);
+
   const palette = useRef<HTMLDivElement | null>(null);
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const isLoaded = useIsLoadedMap();
@@ -37,11 +39,25 @@ const KakaoMap = () => {
   useEffect(() => {
     sltOverlay?.setMap(null);
     if(!sltItem || !map) return
-    setSltOverlay(addOverlay(map, sltItem.position, <SlectedItemOverlay position={sltItem.position} title={sltItem.title} />))
+    setSltOverlay(addOverlay(map, sltItem.position, <SlectedItemOverlay position={sltItem.position} title={sltItem.title} handleCopyClick={async () => {
+        setShowSnakbar(false);
+        const text = `{latitude:${sltItem.position.getLat()},longitude:${sltItem.position.getLng()}}`;
+        await navigator.clipboard.writeText(text);
+        setShowSnakbar(true);
+    }}/>))
     if (sltItem.panto) {
       map.panTo(sltItem.position);
     }
   }, [sltItem])
+
+  useEffect(() => {
+    if (showSnakbar) {
+      const timer = setTimeout(() => {
+        setShowSnakbar(false);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [showSnakbar])
 
   useEffect(() => {
     if (isLoaded && palette.current && sltItemDispatch) {
@@ -112,6 +128,13 @@ const KakaoMap = () => {
 
   return (
     <>
+      <div
+        className={`${
+          showSnakbar ? 'block' : 'hidden'
+        } fixed z-50 px-5 py-2 text-white bg-blue-700 rounded-md left-1/2 top-5 opacity-90`}
+      >
+        복사 완료 ✔
+      </div>
       <div ref={palette} className="w-full h-full"></div>
     </>
   );

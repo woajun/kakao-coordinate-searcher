@@ -27,7 +27,7 @@ export default function Nav({drawer}: Props) {
         </Link>
       </div>
       <div className="absolute -translate-x-1/2 left-1/2">
-      <h1>위경도 검색</h1>
+      <h1>위경도 검색기</h1>
       </div>
     </nav>
   );
