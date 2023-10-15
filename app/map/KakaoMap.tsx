@@ -7,7 +7,6 @@ import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import { usePlaceSearchList } from '../stores/PlaceSearchList.tsx/PlaceSearchListContext';
 import MouseOverOverlay from './MouseOverOverlay';
 import { useMouseOverPlace, useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
-import Overlay from './Overlay';
 import { useSelectedItem, useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 import SlectedItemOverlay from './SlectedItemOverlay';
 
@@ -30,10 +29,19 @@ const KakaoMap = () => {
   const palette = useRef<HTMLDivElement | null>(null);
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const isLoaded = useIsLoadedMap();
-  const overlay = useRef<kakao.maps.CustomOverlay | null>(null);
+
+  const [sltOverlay, setSltOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
+  const sltItem = useSelectedItem();
+  const sltItemDispatch = useSelectedItemDispatch();
 
   useEffect(() => {
-    if (isLoaded && palette.current) {
+    sltOverlay?.setMap(null);
+    if(!sltItem || !map) return
+    setSltOverlay(addOverlay(map, sltItem.position, <SlectedItemOverlay position={sltItem.position} title={sltItem.title} />))
+  }, [sltItem])
+
+  useEffect(() => {
+    if (isLoaded && palette.current && sltItemDispatch) {
       const { Map, LatLng, event } = kakao.maps;
       const aMap = new Map(palette.current, {
         center: new LatLng(37.543341, 127.052727),
@@ -42,8 +50,7 @@ const KakaoMap = () => {
 
       setMap(aMap);
       event.addListener(aMap, 'click', (e: KakaoMapClickEvent) => {
-        overlay.current?.setMap(null);
-        overlay.current = addOverlay(aMap, e.latLng, <Overlay position={e.latLng} />);
+        sltItemDispatch({position: e.latLng, title: "클릭 위치"})
       });
     }
   }, [isLoaded]);
@@ -88,16 +95,6 @@ const KakaoMap = () => {
       setMarkers(ms);
     }
   }, [pList])
-  
-  const [sltOverlay, setSltOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
-  const sltItem = useSelectedItem();
-  const sltItemDispatch = useSelectedItemDispatch();
-
-  useEffect(() => {
-    sltOverlay?.setMap(null);
-    if(!sltItem || !map) return
-    setSltOverlay(addOverlay(map, sltItem.position, <SlectedItemOverlay position={sltItem.position} title={sltItem.title} />))
-  }, [sltItem])
 
   return (
     <>
