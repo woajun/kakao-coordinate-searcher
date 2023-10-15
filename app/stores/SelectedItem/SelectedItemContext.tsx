@@ -2,8 +2,7 @@ import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useStat
 
 type SelectedItem = {
   title: string
-  lat: string
-  lng: string
+  position: kakao.maps.LatLng
 }
 
 const SelectedItemContext = createContext<SelectedItem|null>(null);

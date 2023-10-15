@@ -7,6 +7,7 @@ import {
 import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import Pagination from '../common/Pagination';
 import TextHighligher from '../common/TextHighligher';
+import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 
 export default function PlaceList() {
   const isLoaded = useIsLoadedMap();
@@ -15,6 +16,7 @@ export default function PlaceList() {
   const pListDispatch = usePlaceSearchListDispatch();
   const pList = usePlaceSearchList();
   const moPlaceDispatch = useMouseOverPlaceDispatch();
+  const sltItemDispatch = useSelectedItemDispatch();
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -62,6 +64,14 @@ export default function PlaceList() {
               return (
                 <div
                   key={e.id}
+                  onClick={() => {
+                    if (!sltItemDispatch) return;
+                    const position = new kakao.maps.LatLng(Number(e.y), Number(e.x));
+                    sltItemDispatch({
+                      title: e.place_name,
+                      position
+                    })
+                  }}
                   onMouseOver={() => {
                     if (!moPlaceDispatch) return;
                     moPlaceDispatch({ type: 'set', payload: { place: e } });

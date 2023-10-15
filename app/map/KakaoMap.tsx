@@ -8,6 +8,8 @@ import { usePlaceSearchList } from '../stores/PlaceSearchList.tsx/PlaceSearchLis
 import MouseOverOverlay from './MouseOverOverlay';
 import { useMouseOverPlace, useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import Overlay from './Overlay';
+import { useSelectedItem, useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
+import SlectedItemOverlay from './SlectedItemOverlay';
 
 export function addMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -86,6 +88,16 @@ const KakaoMap = () => {
       setMarkers(ms);
     }
   }, [pList])
+  
+  const [sltOverlay, setSltOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
+  const sltItem = useSelectedItem();
+  const sltItemDispatch = useSelectedItemDispatch();
+
+  useEffect(() => {
+    sltOverlay?.setMap(null);
+    if(!sltItem || !map) return
+    setSltOverlay(addOverlay(map, sltItem.position, <SlectedItemOverlay position={sltItem.position} title={sltItem.title} />))
+  }, [sltItem])
 
   return (
     <>
