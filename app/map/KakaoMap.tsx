@@ -38,6 +38,9 @@ const KakaoMap = () => {
     sltOverlay?.setMap(null);
     if(!sltItem || !map) return
     setSltOverlay(addOverlay(map, sltItem.position, <SlectedItemOverlay position={sltItem.position} title={sltItem.title} />))
+    if (sltItem.panto) {
+      map.panTo(sltItem.position);
+    }
   }, [sltItem])
 
   useEffect(() => {

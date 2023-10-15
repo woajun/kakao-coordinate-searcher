@@ -3,6 +3,7 @@ import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useStat
 type SelectedItem = {
   title: string
   position: kakao.maps.LatLng
+  panto?: boolean
 }
 
 const SelectedItemContext = createContext<SelectedItem|null>(null);

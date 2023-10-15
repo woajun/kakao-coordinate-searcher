@@ -69,7 +69,8 @@ export default function PlaceList() {
                     const position = new kakao.maps.LatLng(Number(e.y), Number(e.x));
                     sltItemDispatch({
                       title: e.place_name,
-                      position
+                      position,
+                      panto: true
                     })
                   }}
                   onMouseOver={() => {
