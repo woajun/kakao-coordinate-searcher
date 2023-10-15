@@ -12,7 +12,7 @@ import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemCont
 export default function PlaceList() {
   const isLoaded = useIsLoadedMap();
   const [ps, setPs] = useState<kakao.maps.services.Places>();
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState('성수역');
   const pListDispatch = usePlaceSearchListDispatch();
   const pList = usePlaceSearchList();
   const moPlaceDispatch = useMouseOverPlaceDispatch();
@@ -51,9 +51,11 @@ export default function PlaceList() {
         <input
           type="text"
           className="w-full px-2 py-2 border rounded-md"
+          value={keyword}
           onChange={(e) => {
             setKeyword(e.target.value);
           }}
+          placeholder='검색어를 입력하세요.'
         />
         <div className="flex flex-col gap-1 p-2">
           <div className="text-end">
