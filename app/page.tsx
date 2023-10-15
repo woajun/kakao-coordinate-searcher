@@ -7,7 +7,6 @@ import Drawer from './layout/Drawer';
 import PlaceList from './places/PlaceList';
 import { IsLoadedMapProvider } from './stores/IsLoadedMap/IsLoadedMapContext';
 import { PlaceSearchListProvider } from './stores/PlaceSearchList.tsx/PlaceSearchListContext';
-import Overlay from './map/Overlay';
 import { MouseOverPlaceProvider } from './stores/MouseOverPlace/MouseOverPlaceContext';
 import { SelectedItemProvider } from './stores/SelectedItem/SelectedItemContext';
 
@@ -16,13 +15,7 @@ type Props = {
 };
 
 export default function Home({ searchParams }: Props) {
-  const [overlay, setOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   const [showSnakbar, setShowSnakbar] = useState(false);
-
-  const handleMapClick = (e: KakaoMapClickEvent, map: kakao.maps.Map) => {
-    overlay?.setMap(null);
-    setOverlay(addOverlay(map, e.latLng, <Overlay position={e.latLng} />));
-  };
 
   const { drawer } = searchParams;
   return (
@@ -43,7 +36,7 @@ export default function Home({ searchParams }: Props) {
                 <Drawer drawer={drawer === 'true'}>
                   <PlaceList />
                 </Drawer>
-                <KakaoMap handleMapClick={handleMapClick} />
+                <KakaoMap />
               </div>
             </div>
           </SelectedItemProvider>

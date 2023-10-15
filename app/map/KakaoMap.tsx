@@ -7,6 +7,7 @@ import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import { usePlaceSearchList } from '../stores/PlaceSearchList.tsx/PlaceSearchListContext';
 import MouseOverOverlay from './MouseOverOverlay';
 import { useMouseOverPlace, useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
+import Overlay from './Overlay';
 
 export function addMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -23,42 +24,27 @@ export function addOverlay(
   return new kakao.maps.CustomOverlay({ content, map, position });
 }
 
-type Props = {
-  handleMapClick?: (e: KakaoMapClickEvent, map: kakao.maps.Map) => void;
-};
-
-const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
+const KakaoMap = () => {
   const palette = useRef<HTMLDivElement | null>(null);
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const isLoaded = useIsLoadedMap();
+  const overlay = useRef<kakao.maps.CustomOverlay | null>(null);
 
   useEffect(() => {
     if (isLoaded && palette.current) {
-      const { Map, LatLng } = kakao.maps;
+      const { Map, LatLng, event } = kakao.maps;
       const aMap = new Map(palette.current, {
         center: new LatLng(37.543341, 127.052727),
         level: 4,
       });
 
       setMap(aMap);
+      event.addListener(aMap, 'click', (e: KakaoMapClickEvent) => {
+        overlay.current?.setMap(null);
+        overlay.current = addOverlay(aMap, e.latLng, <Overlay position={e.latLng} />);
+      });
     }
   }, [isLoaded]);
-
-  const clickEvent = useRef<(e: KakaoMapClickEvent) => void>(() => {});
-  const mapClickHandler = useCallback((e: KakaoMapClickEvent) => {
-    if (map) {
-      handleMapClick(e, map);
-    }
-  }, [handleMapClick, map])
-
-  useEffect(() => {
-    if (map) {
-      const { event } = kakao.maps;
-      event.removeListener(map, 'click', clickEvent.current);
-      event.addListener(map, 'click', mapClickHandler);
-      clickEvent.current = mapClickHandler;
-    }
-  }, [mapClickHandler, map]);
 
   const pList = usePlaceSearchList();
 
@@ -67,13 +53,13 @@ const KakaoMap = ({ handleMapClick = () => {} }: Props) => {
   const moPlaceDispathcer = useMouseOverPlaceDispatch();
   const moPlace = useMouseOverPlace();
 
-  const [moOverlay, setOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
+  const [moOverlay, setMoOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   useEffect(() => {
     if(!map) return;
     moOverlay?.setMap(null);
     if (moPlace && moPlaceDispathcer) {
       const p = new kakao.maps.LatLng(Number(moPlace.y), Number(moPlace.x));
-      setOverlay(addOverlay(map, p, <MouseOverOverlay position={p} place={moPlace} handleMouseLeave={() => {
+      setMoOverlay(addOverlay(map, p, <MouseOverOverlay position={p} place={moPlace} handleMouseLeave={() => {
         moPlaceDispathcer({
           type: 'clear'
         })
