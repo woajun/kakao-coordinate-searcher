@@ -1,5 +1,6 @@
 import { MouseEventHandler } from 'react';
-import { useHistory } from '../stores/History/HistoryContext';
+import { useHistory, useHistoryDispatch } from '../stores/History/HistoryContext';
+import { LeftArrowSvg, XSvg } from '../svg';
 
 type Props = {
   handleClick: MouseEventHandler<HTMLButtonElement>;
@@ -31,20 +32,27 @@ function format(date:Date) {
 
 export default function History({ handleClick }: Props) {
   const history = useHistory();
+  const historyDispatch = useHistoryDispatch();
   return (
     <div className="grow overflow-y-scroll">
-      <button
-        className="text-xs border rounded-md bg-slate-500 text-white px-2 hover:bg-slate-400 active:bg-slate-500"
-        onClick={handleClick}
-      >
-        left arrow
-      </button>
-      <button
-        className="text-xs border rounded-md bg-slate-500 text-white px-2 hover:bg-slate-400 active:bg-slate-500"
-        onClick={handleClick}
-      >
-        전체 삭제
-      </button>
+      <div className='flex justify-between'>
+        <button
+          className="text-xs border rounded-md bg-slate-300 text-white w-7 h-7 hover:bg-slate-400 active:bg-slate-300 flex justify-center items-center"
+          onClick={handleClick}
+        >
+          <LeftArrowSvg />
+        </button>
+        <button
+          className="text-xs border rounded-md bg-slate-500 text-white px-2 hover:bg-slate-400 active:bg-slate-500"
+          onClick={() => {
+            historyDispatch!({
+              type: 'clear'
+            })
+          }}
+        >
+          전체 삭제
+        </button>
+      </div>
       <div className="flex flex-col gap-2">
         {history.length > 0 ? (
           history.map((e) => (
@@ -61,7 +69,7 @@ export default function History({ handleClick }: Props) {
                 <div className="flex">
                   <div>복사</div>
                   <div>이동</div>
-                  <div>삭제</div>
+                  <div><XSvg /></div>
                 </div>
               </div>
             </div>
