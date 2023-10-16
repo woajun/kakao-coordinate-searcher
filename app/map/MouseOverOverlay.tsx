@@ -16,7 +16,7 @@ export default function Overlay({ position, place, handleMouseLeave, handleClick
   return (
     <div className="arrow absolute bottom-0 -translate-x-1/2 pb-[9px] opacity-90">
       <div
-        className="px-3 py-2 bg-white border-2 cursor-auto rounded-xl text-xs"
+        className="px-3 py-2 text-xs bg-white border-2 cursor-auto rounded-xl"
         onClick={handleClick}
         onMouseDown={handleOverlayMouseDown}
         onMouseLeave={handleMouseLeave}

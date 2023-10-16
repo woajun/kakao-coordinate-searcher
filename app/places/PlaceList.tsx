@@ -81,7 +81,7 @@ export default function PlaceList() {
 
   return (
     <div className="flex flex-col justify-between h-full px-2 py-3">
-      <form onSubmit={handleSubmit} className="grow-0 pb-2">
+      <form onSubmit={handleSubmit} className="pb-2 grow-0">
         <input
           type="text"
           className="w-full px-2 py-2 border rounded-md"
@@ -103,7 +103,7 @@ export default function PlaceList() {
           <div className="flex flex-col gap-1 p-2 overflow-y-scroll grow">
             <div className="flex justify-between">
               <button
-                className="text-xs border rounded-md bg-slate-500 text-white px-2 hover:bg-slate-400 active:bg-slate-500"
+                className="px-2 text-xs text-white border rounded-md bg-slate-500 hover:bg-slate-400 active:bg-slate-500"
                 onClick={() => setShowHistory(true)}
               >
                 이전 선택 기록
@@ -149,7 +149,7 @@ export default function PlaceList() {
               <span className="text-gray-600">검색결과가 없습니다</span>
             )}
           </div>
-          <div className="flex justify-center pb-5 pt-1">
+          <div className="flex justify-center pt-1 pb-5">
             <Pagination
               currentPage={pList?.pagination.current ?? 1}
               totalPage={pList?.pagination.last ?? 0}

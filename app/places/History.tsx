@@ -38,16 +38,16 @@ export default function History({ handleClick }: Props) {
   const history = useHistory();
   const historyDispatch = useHistoryDispatch();
   return (
-    <div className="grow overflow-y-scroll">
+    <div className="overflow-y-scroll grow">
       <div className="flex justify-between">
         <button
-          className="text-xs border rounded-md bg-slate-500 text-white w-7 h-7 hover:bg-slate-400 active:bg-slate-500 flex justify-center items-center"
+          className="flex items-center justify-center text-xs text-white border rounded-md bg-slate-500 w-7 h-7 hover:bg-slate-400 active:bg-slate-500"
           onClick={handleClick}
         >
           <LeftArrowSvg />
         </button>
         <button
-          className="text-xs border rounded-md bg-slate-500 text-white px-2 hover:bg-slate-400 active:bg-slate-500"
+          className="px-2 text-xs text-white border rounded-md bg-slate-500 hover:bg-slate-400 active:bg-slate-500"
           onClick={() => {
             historyDispatch!({
               type: 'clear',
@@ -63,7 +63,7 @@ export default function History({ handleClick }: Props) {
             .map((e) => (
               <div
                 key={e.key}
-                className="flex justify-between hover:bg-slate-100 p-1 rounded-md"
+                className="flex justify-between p-1 rounded-md hover:bg-slate-100"
               >
                 <div>
                   <div className="text-sm font-semibold">{e.title}</div>
@@ -71,7 +71,7 @@ export default function History({ handleClick }: Props) {
                   <div className="text-xs">경도 {e.position.getLng()}</div>
                 </div>
                 <div className="flex flex-col justify-between shrink-0">
-                  <p className="text-xs flex justify-end text-slate-600">
+                  <p className="flex justify-end text-xs text-slate-600">
                     {format(e.at)}
                   </p>
                   <div className="flex gap-1">

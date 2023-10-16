@@ -177,7 +177,7 @@ const KakaoMap = () => {
       const aCurOverlay = addOverlay(
         map,
         p,
-        <div className="w-3 h-3 border rounded-full bg-red-500 border-red-300">
+        <div className="w-3 h-3 bg-red-500 border border-red-300 rounded-full">
           <span className="sr-only">Current Spot</span>
         </div>
       );
