@@ -1,5 +1,6 @@
 import { MouseEventHandler } from 'react';
 import { ClipboardSvg } from '../svg';
+import BlueButton from '../common/BlueButton';
 
 type Props = {
   position: kakao.maps.LatLng;
@@ -29,12 +30,11 @@ export default function SlectedItemOverlay({ position, title, handleCopyClick }:
             <span>{position.getLng()}</span>
           </div>
         </div>
-        <button 
-          className='w-8 h-8 border-2 rounded-xl border-blue-300 text-blue-600 flex justify-center items-center hover:bg-blue-100'
+        <BlueButton 
           onClick={handleCopyClick}
         >
           <ClipboardSvg />
-        </button>
+        </BlueButton>
         </div>
       </div>
     </div>

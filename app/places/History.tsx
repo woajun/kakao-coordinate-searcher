@@ -4,6 +4,7 @@ import {
   useHistoryDispatch,
 } from '../stores/History/HistoryContext';
 import { ClipboardSvg, LeftArrowSvg, MapSvg, XSvg } from '../svg';
+import BlueButton from '../common/BlueButton';
 
 type Props = {
   handleClick: MouseEventHandler<HTMLButtonElement>;
@@ -70,24 +71,21 @@ export default function History({ handleClick }: Props) {
                   <div className="text-xs">경도 {e.position.getLng()}</div>
                 </div>
                 <div className="flex flex-col justify-between shrink-0">
-                  <div className="text-xs flex justify-end text-slate-600">
+                  <p className="text-xs flex justify-end text-slate-600">
                     {format(e.at)}
-                  </div>
+                  </p>
                   <div className="flex gap-1">
-                    <button
-                      className="w-8 h-8 border-2 rounded-xl border-blue-300 text-blue-600 flex justify-center items-center hover:bg-blue-100"
+                    <BlueButton
                       onClick={() => {}}
                     >
                       <ClipboardSvg />
-                    </button>
-                    <button
-                      className="w-8 h-8 border-2 rounded-xl border-blue-300 text-blue-600 flex justify-center items-center hover:bg-blue-100"
+                    </BlueButton>
+                    <BlueButton
                       onClick={() => {}}
                     >
                       <MapSvg />
-                    </button>
-                    <button
-                      className="w-8 h-8 border-2 rounded-xl border-blue-300 text-blue-600 flex justify-center items-center hover:bg-blue-100"
+                    </BlueButton>
+                    <BlueButton
                       onClick={() => {
                         if (historyDispatch) {
                           historyDispatch({
@@ -100,7 +98,7 @@ export default function History({ handleClick }: Props) {
                       }}
                     >
                       <XSvg />
-                    </button>
+                    </BlueButton>
                   </div>
                 </div>
               </div>
