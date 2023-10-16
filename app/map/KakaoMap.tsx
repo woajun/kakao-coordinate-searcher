@@ -144,7 +144,27 @@ const KakaoMap = () => {
       boundsDispatch({ type: 'clear' });
     }
   }, [bounds])
-  
+
+  // 현재 위치로 이동 클릭
+  const [curOverlay, setCurOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
+  const handleCurLocationClick = () => {
+    if (!map) return;
+    navigator.geolocation.getCurrentPosition((e) => {
+      const { latitude, longitude } = e.coords;
+      const p = new kakao.maps.LatLng(latitude, longitude);
+      map.panTo(p);
+      curOverlay?.setMap(null);
+      const aCurOverlay = addOverlay(
+        map,
+        p,
+        <div className="w-3 h-3 border rounded-full bg-red-500 border-red-300">
+          <span className="sr-only">Current Spot</span>
+        </div>
+      );
+      setCurOverlay(aCurOverlay);
+    });
+  }
+
   return (
     <>
       <div
@@ -157,18 +177,27 @@ const KakaoMap = () => {
       <div ref={palette} className="w-full h-full"></div>
       <div
         className={`w-10 h-10 fixed flex justify-center items-center bottom-8 right-6 z-50 text-white bg-blue-700 hover:bg-blue-800 opacity-90 rounded-full`}
-        onClick={() => {
-          navigator.geolocation.getCurrentPosition((e) => {
-            const lat = e.coords.latitude;
-            const lng = e.coords.longitude;
-            map?.panTo(new kakao.maps.LatLng(lat, lng))
-          })
-        }}
+        onClick={handleCurLocationClick}
       >
         <span className="sr-only">Current Location</span>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+          />
         </svg>
       </div>
     </>
