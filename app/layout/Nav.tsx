@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 type Props = {
@@ -6,28 +7,26 @@ type Props = {
 
 export default function Nav({drawer}: Props) {
   return (
-    <nav className="relative flex h-8">
-      <div className="lg:hidden">
-        <Link href={drawer ? "?drawer=false" : "?drawer=true"} className="flex">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4 6h16M4 10h16M4 14h16M4 18h16"
-            ></path>
-          </svg>
-          키워드 검색
+    <nav className="relative flex h-12 bg-slate-100 items-center border-b border-slate-300">
+      <div className="lg:hidden ps-2">
+        <Link
+          href={drawer ? '?drawer=false' : '?drawer=true'}
+          className="flex border bg-slate-200 hover:bg-slate-300 rounded-md"
+        >
+          <Image alt="icon" src="/map-magnifying.svg" width="30" height="30" />
         </Link>
       </div>
       <div className="absolute -translate-x-1/2 left-1/2">
-      <h1>위경도 검색기</h1>
+        <h1 className="flex items-center text-lg font-semibold text-slate-900">
+          <Image
+            className="lg:block hidden"
+            alt="icon"
+            src="/map-magnifying.svg"
+            width="30"
+            height="30"
+          />
+          <span>위경도 검색기</span>
+        </h1>
       </div>
     </nav>
   );

@@ -176,7 +176,7 @@ const KakaoMap = () => {
       </div>
       <div ref={palette} className="w-full h-full"></div>
       <div
-        className={`w-10 h-10 fixed flex justify-center items-center bottom-8 right-6 z-50 text-white bg-blue-700 hover:bg-blue-800 opacity-90 rounded-full`}
+        className={`w-10 h-10 fixed flex justify-center items-center bottom-8 right-6 z-10 text-white bg-blue-700 hover:bg-blue-800 opacity-90 rounded-full`}
         onClick={handleCurLocationClick}
       >
         <span className="sr-only">Current Location</span>
