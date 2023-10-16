@@ -8,8 +8,10 @@ const HistoryDispatchContext = createContext<Dispatch<HistoryAction> | null>(nul
 function Reducer(history: History, action: HistoryAction) {
   switch (action.type) {
     case 'add':
-      history.push(action.payload)
-      return history;
+      return [
+        ...history,
+        { ...action.payload, at: new Date(), key: `${Math.random()}` },
+      ];
     case 'replace':
       return action.payload;
     case 'clear':

@@ -1,6 +1,11 @@
 import { SelectedItem } from "../SelectedItem/types"
 
-export type History = SelectedItem[]
+interface HistoryItem extends SelectedItem {
+    at: Date
+    key: string
+}
+
+export type History = HistoryItem[]
 
 type SetAction = {
     type: 'add'

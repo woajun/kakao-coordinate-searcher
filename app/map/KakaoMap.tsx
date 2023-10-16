@@ -10,6 +10,7 @@ import { useMouseOverPlace, useMouseOverPlaceDispatch } from '../stores/MouseOve
 import { useSelectedItem, useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 import SlectedItemOverlay from './SlectedItemOverlay';
 import { useBounds, useBoundsDispatch } from '../stores/Bounds/BoundsContext';
+import { useHistoryDispatch } from '../stores/History/HistoryContext';
 
 export function addMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -34,6 +35,7 @@ const KakaoMap = () => {
   const [sltOverlay, setSltOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   const sltItem = useSelectedItem();
   const sltItemDispatch = useSelectedItemDispatch();
+  const historyDispatch = useHistoryDispatch();
   useEffect(() => {
     sltOverlay?.setMap(null);
     if(!sltItem || !map) return
@@ -45,6 +47,12 @@ const KakaoMap = () => {
     }}/>))
     if (sltItem.panto) {
       map.panTo(sltItem.position);
+    }
+    if (historyDispatch) {
+      historyDispatch({
+        type: 'add',
+        payload: sltItem
+      })
     }
   }, [sltItem])
 
