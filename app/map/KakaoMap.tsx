@@ -107,21 +107,27 @@ const KakaoMap = () => {
   }, [moPlace])
 
   useEffect(() => {
-    if (map && pList && moPlaceDispathcer) {
-      markers.forEach((m) => m.setMap(null));
+    if (map && pList && moPlaceDispathcer && sltItemDispatch) {
+      markers.forEach((marker) => marker.setMap(null));
       const ms = pList.data.map((e) => {
-        const m = addMarker(map, new kakao.maps.LatLng(Number(e.y), Number(e.x)))
-        kakao.maps.event.addListener(m, 'mouseover', function () {
+        const position = new kakao.maps.LatLng(Number(e.y), Number(e.x));
+        const marker = addMarker(map, position);
+        kakao.maps.event.addListener(marker, 'mouseover', function () {
           moPlaceDispathcer({
             type: 'set',
             payload: {
-              place: e
-            }
-          })
+              place: e,
+            },
+          });
         });
-        return m;
-      }
-      );
+        kakao.maps.event.addListener(marker, 'click', function () {
+          sltItemDispatch({
+            position,
+            title: e.place_name,
+          });
+        });
+        return marker;
+      });
       setMarkers(ms);
     }
   }, [pList])

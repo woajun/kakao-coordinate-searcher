@@ -8,15 +8,13 @@ type Props = {
 
 
 export default function SlectedItemOverlay({ position, title, handleCopyClick }: Props) {
-  const handleOverlayMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
-    e.stopPropagation();
-  };
-
   return (
     <div className="arrow absolute bottom-0 -translate-x-1/2 pb-[9px] opacity-90">
       <div
         className="px-3 py-2 bg-white border-2 cursor-auto rounded-xl text-xs border-blue-400"
-        onMouseDown={handleOverlayMouseDown}
+        onMouseDown={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
       >
         <h1 className="font-bold text-center">{title}</h1>
         <div className='flex items-center gap-2'>
