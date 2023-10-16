@@ -9,6 +9,7 @@ import MouseOverOverlay from './MouseOverOverlay';
 import { useMouseOverPlace, useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import { useSelectedItem, useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 import SlectedItemOverlay from './SlectedItemOverlay';
+import { useApplyBounds, useApplyBoundsDispatch } from '../stores/ApplyBounds/ApplyBoundsContext';
 
 export function addMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -106,10 +107,12 @@ const KakaoMap = () => {
     }
   }, [moPlace])
 
+  const bounds = useRef<kakao.maps.LatLngBounds>();
+
   useEffect(() => {
     if (map && pList && moPlaceDispathcer && sltItemDispatch) {
       markers.forEach((marker) => marker.setMap(null));
-      const ms = pList.data.map((e) => {
+      const aMarkers = pList.data.map((e) => {
         const position = new kakao.maps.LatLng(Number(e.y), Number(e.x));
         const marker = addMarker(map, position);
         kakao.maps.event.addListener(marker, 'mouseover', function () {
@@ -128,10 +131,23 @@ const KakaoMap = () => {
         });
         return marker;
       });
-      setMarkers(ms);
+      setMarkers(aMarkers);
+
+      const newBounds = new kakao.maps.LatLngBounds();
+      aMarkers.forEach((e) => newBounds.extend(e.getPosition()))
+      bounds.current = newBounds;
     }
   }, [pList])
 
+  const applyBounds = useApplyBounds();
+  const applyBoundsDispatch = useApplyBoundsDispatch();
+
+  useEffect(() => {
+    if (applyBounds && bounds.current && map && applyBoundsDispatch) {
+      map.setBounds(bounds.current);
+      applyBoundsDispatch(false);
+    }
+  }, [applyBounds])
   return (
     <>
       <div

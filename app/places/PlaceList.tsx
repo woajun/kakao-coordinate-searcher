@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FormEventHandler, useEffect, useState } from 'react';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import {
   usePlaceSearchList,
@@ -8,8 +8,11 @@ import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPla
 import Pagination from '../common/Pagination';
 import TextHighligher from '../common/TextHighligher';
 import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
+import { useRouter } from 'next/navigation';
+import { useApplyBoundsDispatch } from '../stores/ApplyBounds/ApplyBoundsContext';
 
 export default function PlaceList() {
+  const router = useRouter();
   const isLoaded = useIsLoadedMap();
   const [ps, setPs] = useState<kakao.maps.services.Places>();
   const [keyword, setKeyword] = useState('성수역');
@@ -45,18 +48,29 @@ export default function PlaceList() {
     });
   }, [keyword, ps, pListDispatch]);
 
+  const applyBoundsDispatch = useApplyBoundsDispatch();
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    router.push('?drawer=false')
+    if(applyBoundsDispatch) {
+      applyBoundsDispatch(true);
+    }
+  };
   return (
     <div className="flex flex-col justify-between h-full px-2 py-3">
       <div>
-        <input
-          type="text"
-          className="w-full px-2 py-2 border rounded-md"
-          value={keyword}
-          onChange={(e) => {
-            setKeyword(e.target.value);
-          }}
-          placeholder='검색어를 입력하세요.'
-        />
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            className="w-full px-2 py-2 border rounded-md"
+            value={keyword}
+            onChange={(e) => {
+              setKeyword(e.target.value);
+            }}
+            placeholder='검색어를 입력하세요.'
+          />
+        </form>
         <div className="flex flex-col gap-1 p-2">
           <div className="text-end">
             검색결과: {pList?.pagination.totalCount ?? 0} 건
