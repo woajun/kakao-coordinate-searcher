@@ -27,16 +27,13 @@ export function addOverlay(
 }
 
 const KakaoMap = () => {
+  const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [showSnakbar, setShowSnakbar] = useState(false);
 
-  const palette = useRef<HTMLDivElement | null>(null);
-  const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const isLoaded = useIsLoadedMap();
-
+  // 선택된 장소 오버레이 생성
   const [sltOverlay, setSltOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   const sltItem = useSelectedItem();
   const sltItemDispatch = useSelectedItemDispatch();
-
   useEffect(() => {
     sltOverlay?.setMap(null);
     if(!sltItem || !map) return
@@ -51,6 +48,7 @@ const KakaoMap = () => {
     }
   }, [sltItem])
 
+  // 스낵바 1.5초 후 닫기
   useEffect(() => {
     if (showSnakbar) {
       const timer = setTimeout(() => {
@@ -60,6 +58,9 @@ const KakaoMap = () => {
     }
   }, [showSnakbar])
 
+  // 카카오맵 API가 로드 되면 지도와 지도 클릭이벤트 생성
+  const isLoaded = useIsLoadedMap();
+  const palette = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (isLoaded && palette.current && sltItemDispatch) {
       const { Map, LatLng, event } = kakao.maps;
@@ -75,13 +76,9 @@ const KakaoMap = () => {
     }
   }, [isLoaded]);
 
-  const pList = usePlaceSearchList();
-
-  const [markers, setMarkers] = useState<kakao.maps.Marker[]>([])
-
+  // 마우스가 오버레이된 장소에 따라 커스텀 오버레이 생성
   const moPlaceDispathcer = useMouseOverPlaceDispatch();
   const moPlace = useMouseOverPlace();
-
   const [moOverlay, setMoOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   useEffect(() => {
     if(!map) return;
@@ -107,6 +104,9 @@ const KakaoMap = () => {
     }
   }, [moPlace])
 
+  // 장소 검색 결과에 따라 지도에 마커 생성
+  const [markers, setMarkers] = useState<kakao.maps.Marker[]>([]);
+  const pList = usePlaceSearchList();
   useEffect(() => {
     if (map && pList && moPlaceDispathcer && sltItemDispatch) {
       markers.forEach((marker) => marker.setMap(null));
@@ -133,9 +133,9 @@ const KakaoMap = () => {
     }
   }, [pList])
 
+  // bounds 변경시 지도 범위 재설정
   const bounds = useBounds();
   const boundsDispatch = useBoundsDispatch();
-
   useEffect(() => {
     if (map && boundsDispatch && bounds.positions.length > 0) {
       const newBounds = new kakao.maps.LatLngBounds();
@@ -144,6 +144,7 @@ const KakaoMap = () => {
       boundsDispatch({ type: 'clear' });
     }
   }, [bounds])
+  
   return (
     <>
       <div
