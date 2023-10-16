@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useReducer, useState } from "react";
+import { Dispatch, ReactNode, createContext, useContext, useReducer, useState } from "react";
 import { SelectedItem, SelectedItemAction } from "./types";
 
 const SelectedItemContext = createContext<SelectedItem|null>(null);

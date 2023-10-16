@@ -10,6 +10,7 @@ import { PlaceSearchListProvider } from './stores/PlaceSearchList/PlaceSearchLis
 import { MouseOverPlaceProvider } from './stores/MouseOverPlace/MouseOverPlaceContext';
 import { SelectedItemProvider } from './stores/SelectedItem/SelectedItemContext';
 import { BoundsProvider } from './stores/Bounds/BoundsContext';
+import { HistoryProvider } from './stores/History/HistoryContext';
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -21,19 +22,21 @@ export default function Home({ searchParams }: Props) {
     <IsLoadedMapProvider>
       <PlaceSearchListProvider>
         <MouseOverPlaceProvider>
-          <SelectedItemProvider>
-            <BoundsProvider>
-              <div className="flex flex-col w-screen h-screen">
-                <Nav drawer={drawer === 'true'} />
-                <div className="relative grow">
-                  <Drawer drawer={drawer === 'true'}>
-                    <PlaceList />
-                  </Drawer>
-                  <KakaoMap />
+          <HistoryProvider>
+            <SelectedItemProvider>
+              <BoundsProvider>
+                <div className="flex flex-col w-screen h-screen">
+                  <Nav drawer={drawer === 'true'} />
+                  <div className="relative grow">
+                    <Drawer drawer={drawer === 'true'}>
+                      <PlaceList />
+                    </Drawer>
+                    <KakaoMap />
+                  </div>
                 </div>
-              </div>
-            </BoundsProvider>
-          </SelectedItemProvider>
+              </BoundsProvider>
+            </SelectedItemProvider>
+          </HistoryProvider>
         </MouseOverPlaceProvider>
       </PlaceSearchListProvider>
     </IsLoadedMapProvider>
