@@ -4,7 +4,7 @@ import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import {
   usePlaceSearchList,
   usePlaceSearchListDispatch,
-} from '../stores/PlaceSearchList.tsx/PlaceSearchListContext';
+} from '../stores/PlaceSearchList/PlaceSearchListContext';
 import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import Pagination from '../common/Pagination';
 import TextHighligher from '../common/TextHighligher';
@@ -96,12 +96,14 @@ export default function PlaceList() {
           }}
         />
       </form>
-      {
-        showHistory ? <History handleClick={() => setShowHistory(false)}/> :
+      {showHistory ? (
+        <History handleClick={() => setShowHistory(false)} />
+      ) : (
         <>
           <div className="flex flex-col gap-1 p-2 overflow-y-scroll grow">
             <div className="flex justify-between">
-              <button className="text-xs border rounded-md bg-slate-500 text-white px-2 hover:bg-slate-400 active:bg-slate-500"
+              <button
+                className="text-xs border rounded-md bg-slate-500 text-white px-2 hover:bg-slate-400 active:bg-slate-500"
                 onClick={() => setShowHistory(true)}
               >
                 이전 선택 기록
@@ -160,7 +162,7 @@ export default function PlaceList() {
             />
           </div>
         </>
-      }
+      )}
     </div>
   );
 }

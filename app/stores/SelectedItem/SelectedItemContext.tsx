@@ -12,9 +12,14 @@ const SelectedItemDispatchContext = createContext<Dispatch<SetStateAction<Select
 
 export const SelectedItemProvider = ({ children }: {children: ReactNode}) => {
   const [selectedItem, setSeletedItem] = useState<SelectedItem|null>(null)
+
+  const handleSetSlectedItem: Dispatch<SetStateAction<SelectedItem | null>> = (sltItem) => {
+    console.log('apple')
+    return setSeletedItem(sltItem);
+  }
   return (
     <SelectedItemContext.Provider value={selectedItem}>
-      <SelectedItemDispatchContext.Provider value={setSeletedItem}>
+      <SelectedItemDispatchContext.Provider value={handleSetSlectedItem}>
         {children}
       </SelectedItemDispatchContext.Provider>
     </SelectedItemContext.Provider>
