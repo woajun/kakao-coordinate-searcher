@@ -71,7 +71,12 @@ const KakaoMap = () => {
 
       setMap(aMap);
       event.addListener(aMap, 'click', (e: KakaoMapClickEvent) => {
-        sltItemDispatch({position: e.latLng, title: "클릭 위치"})
+        sltItemDispatch({
+          type: 'set',
+          payload: {
+            position: e.latLng, title: "클릭 위치"
+          }
+        })
       });
     }
   }, [isLoaded]);
@@ -96,8 +101,11 @@ const KakaoMap = () => {
         }}
         handleClick={() => {
           sltItemDispatch({
-            position:p,
-            title: moPlace.place_name,
+            type: 'set',
+            payload: {
+              position:p,
+              title: moPlace.place_name,
+            }
           })
         }}
       />))
@@ -123,8 +131,11 @@ const KakaoMap = () => {
         });
         kakao.maps.event.addListener(marker, 'click', function () {
           sltItemDispatch({
-            position,
-            title: e.place_name,
+            type: 'set',
+            payload: {
+              position,
+              title: e.place_name,
+            }
           });
         });
         return marker;

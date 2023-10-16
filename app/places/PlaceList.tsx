@@ -124,9 +124,12 @@ export default function PlaceList() {
                         Number(e.x)
                       );
                       sltItemDispatch({
-                        title: e.place_name,
-                        position,
-                        panto: true,
+                        type: 'set',
+                        payload: {
+                          title: e.place_name,
+                          position,
+                          panto: true,
+                        }
                       });
                     }}
                     onMouseOver={() => {
