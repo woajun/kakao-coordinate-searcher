@@ -9,7 +9,7 @@ import { IsLoadedMapProvider } from './stores/IsLoadedMap/IsLoadedMapContext';
 import { PlaceSearchListProvider } from './stores/PlaceSearchList.tsx/PlaceSearchListContext';
 import { MouseOverPlaceProvider } from './stores/MouseOverPlace/MouseOverPlaceContext';
 import { SelectedItemProvider } from './stores/SelectedItem/SelectedItemContext';
-import { ApplyBoundsProvider } from './stores/ApplyBounds/ApplyBoundsContext';
+import { BoundsProvider } from './stores/Bounds/BoundsContext';
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -22,7 +22,7 @@ export default function Home({ searchParams }: Props) {
       <PlaceSearchListProvider>
         <MouseOverPlaceProvider>
           <SelectedItemProvider>
-            <ApplyBoundsProvider>
+            <BoundsProvider>
               <div className="flex flex-col w-screen h-screen">
                 <Nav drawer={drawer === 'true'} />
                 <div className="relative grow">
@@ -32,7 +32,7 @@ export default function Home({ searchParams }: Props) {
                   <KakaoMap />
                 </div>
               </div>
-            </ApplyBoundsProvider>
+            </BoundsProvider>
           </SelectedItemProvider>
         </MouseOverPlaceProvider>
       </PlaceSearchListProvider>

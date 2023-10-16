@@ -1,4 +1,5 @@
-import { FormEventHandler, useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { FormEventHandler, useEffect, useRef, useState } from 'react';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import {
   usePlaceSearchList,
@@ -9,22 +10,34 @@ import Pagination from '../common/Pagination';
 import TextHighligher from '../common/TextHighligher';
 import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 import { useRouter } from 'next/navigation';
-import { useApplyBoundsDispatch } from '../stores/ApplyBounds/ApplyBoundsContext';
+import { useBoundsDispatch } from '../stores/Bounds/BoundsContext';
 
 export default function PlaceList() {
   const router = useRouter();
   const isLoaded = useIsLoadedMap();
   const [ps, setPs] = useState<kakao.maps.services.Places>();
   const [keyword, setKeyword] = useState('성수역');
-  const pListDispatch = usePlaceSearchListDispatch();
   const pList = usePlaceSearchList();
+  const pListDispatch = usePlaceSearchListDispatch();
   const moPlaceDispatch = useMouseOverPlaceDispatch();
   const sltItemDispatch = useSelectedItemDispatch();
+  const boundsDispatch = useBoundsDispatch();
 
   useEffect(() => {
     if (!isLoaded) return;
     setPs(new kakao.maps.services.Places());
   }, [isLoaded]);
+
+  const positions = useRef<kakao.maps.LatLng[]>([]);
+  const changeMapBounds = () => {
+    if (!boundsDispatch) return;
+    boundsDispatch({
+      type: 'apply',
+      payload: { positions: positions.current },
+    });
+  }
+
+  const changeable= useRef(true);
 
   useEffect(() => {
     if (!ps || !pListDispatch) return;
@@ -38,6 +51,11 @@ export default function PlaceList() {
               pagination,
             },
           });
+          positions.current = data.map((e) => new kakao.maps.LatLng(Number(e.y), Number(e.x)));
+          if(changeable.current) {
+            changeMapBounds();
+            changeable.current = true;
+          }
           break;
         default:
           pListDispatch({
@@ -48,14 +66,11 @@ export default function PlaceList() {
     });
   }, [keyword, ps, pListDispatch]);
 
-  const applyBoundsDispatch = useApplyBoundsDispatch();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     router.push('?drawer=false')
-    if(applyBoundsDispatch) {
-      applyBoundsDispatch(true);
-    }
+    changeMapBounds();
   };
   return (
     <div className="flex flex-col justify-between h-full px-2 py-3">
@@ -66,9 +81,11 @@ export default function PlaceList() {
             className="w-full px-2 py-2 border rounded-md"
             value={keyword}
             onChange={(e) => {
+              changeable.current = false;
               setKeyword(e.target.value);
             }}
             placeholder='검색어를 입력하세요.'
+            onBlur={() => {changeable.current = true}}
           />
         </form>
         <div className="flex flex-col gap-1 p-2">
