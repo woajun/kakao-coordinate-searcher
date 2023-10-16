@@ -12,13 +12,15 @@ export default function Drawer({ drawer, children }: Props) {
       <div
         className={`${
           !drawer && '-translate-x-full'
-        } w-80 bg-white bg-opacity-95 transform transition-transform duration-300 ease-in-out z-20 lg:translate-x-0 pointer-events-auto`}
+        } w-80 bg-white bg-opacity-95 transform transition-transform duration-300 ease-in-out z-20 lg:translate-x-0 pointer-events-auto border-r border-slate-300`}
       >
         {children}
       </div>
       <Link
         href="?drawer=false"
-        className={`absolute w-full h-full bg-black grow opacity-30 lg:hidden pointer-events-auto ${!drawer && 'hidden'}`}
+        className={`absolute w-full h-full bg-black grow opacity-30 lg:hidden pointer-events-auto ${
+          !drawer && 'hidden'
+        }`}
       ></Link>
     </div>
   );

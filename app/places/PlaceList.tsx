@@ -74,57 +74,58 @@ export default function PlaceList() {
   };
   return (
     <div className="flex flex-col justify-between h-full px-2 py-3">
-      <div>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            className="w-full px-2 py-2 border rounded-md"
-            value={keyword}
-            onChange={(e) => {
-              changeable.current = false;
-              setKeyword(e.target.value);
-            }}
-            placeholder='검색어를 입력하세요.'
-            onBlur={() => {changeable.current = true}}
-          />
-        </form>
-        <div className="flex flex-col gap-1 p-2">
-          <div className="text-end">
+      <form onSubmit={handleSubmit} className='grow-0 pb-2'>
+        <input
+          type="text"
+          className="w-full px-2 py-2 border rounded-md"
+          value={keyword}
+          onChange={(e) => {
+            changeable.current = false;
+            setKeyword(e.target.value);
+          }}
+          placeholder='검색어를 입력하세요.'
+          onBlur={() => {changeable.current = true}}
+        />
+      </form>
+      <div className="flex flex-col gap-1 p-2 overflow-y-scroll grow">
+        <div className="flex justify-between">
+          <button className='text-xs border rounded-md bg-slate-500 text-white px-2 hover:bg-slate-400 active:bg-slate-500'>이전 선택 기록</button>
+          <div className='text-sm text-slate-800'>
             검색결과: {pList?.pagination.totalCount ?? 0} 건
           </div>
-          {pList ?
-            pList.data.map((e) => {
-              return (
-                <div
-                  key={e.id}
-                  onClick={() => {
-                    if (!sltItemDispatch) return;
-                    const position = new kakao.maps.LatLng(Number(e.y), Number(e.x));
-                    sltItemDispatch({
-                      title: e.place_name,
-                      position,
-                      panto: true
-                    })
-                  }}
-                  onMouseOver={() => {
-                    if (!moPlaceDispatch) return;
-                    moPlaceDispatch({ type: 'set', payload: { place: e } });
-                  }}
-                  onMouseLeave={() => {
-                    if (!moPlaceDispatch) return;
-                    moPlaceDispatch({ type: 'clear' });
-                  }}
-                >
-                  <TextHighligher keyword={keyword} text={e.place_name} />
-                </div>
-              );
-            })
-          : 
-            <span className='text-gray-600'>검색결과가 없습니다</span>
-          }
         </div>
+        {pList ?
+          pList.data.map((e) => {
+            return (
+              <div
+                key={e.id}
+                onClick={() => {
+                  if (!sltItemDispatch) return;
+                  const position = new kakao.maps.LatLng(Number(e.y), Number(e.x));
+                  sltItemDispatch({
+                    title: e.place_name,
+                    position,
+                    panto: true
+                  })
+                }}
+                onMouseOver={() => {
+                  if (!moPlaceDispatch) return;
+                  moPlaceDispatch({ type: 'set', payload: { place: e } });
+                }}
+                onMouseLeave={() => {
+                  if (!moPlaceDispatch) return;
+                  moPlaceDispatch({ type: 'clear' });
+                }}
+              >
+                <TextHighligher keyword={keyword} text={e.place_name} />
+              </div>
+            );
+          })
+        : 
+          <span className='text-gray-600'>검색결과가 없습니다</span>
+        }
       </div>
-      <div className="flex justify-center pb-5">
+      <div className="flex justify-center pb-5 pt-1">
         <Pagination
           currentPage={pList?.pagination.current ?? 1}
           totalPage={pList?.pagination.last ?? 0}
