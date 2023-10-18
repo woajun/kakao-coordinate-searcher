@@ -13,11 +13,11 @@ import { useBounds, useBoundsDispatch } from '../stores/Bounds/BoundsContext';
 import { useHistoryDispatch } from '../stores/History/HistoryContext';
 import { MarkerSvg } from '../svg';
 
-export function addMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
+function createMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
 }
 
-export function addOverlay(
+function createOverlay(
   map: kakao.maps.Map,
   position: kakao.maps.LatLng,
   jsxElement: JSX.Element
@@ -40,12 +40,22 @@ const KakaoMap = () => {
   useEffect(() => {
     sltOverlay?.setMap(null);
     if(!sltItem || !map) return
-    setSltOverlay(addOverlay(map, sltItem.position, <SlectedItemOverlay position={sltItem.position} title={sltItem.title} handleCopyClick={async () => {
-        setShowSnakbar(false);
-        const text = `{latitude:${sltItem.position.getLat()},longitude:${sltItem.position.getLng()}}`;
-        await navigator.clipboard.writeText(text);
-        setShowSnakbar(true);
-    }}/>))
+    const newSelectedItemOverlay = createOverlay(
+      map, 
+      sltItem.position, 
+      <SlectedItemOverlay 
+        position={sltItem.position} 
+        title={sltItem.title} 
+        handleCopyClick={async () => {
+            setShowSnakbar(false);
+            const text = `{latitude:${sltItem.position.getLat()},longitude:${sltItem.position.getLng()}}`;
+            await navigator.clipboard.writeText(text);
+            setShowSnakbar(true);
+          }
+        }
+      />
+    )
+    setSltOverlay(newSelectedItemOverlay)
     if (sltItem.panto) {
       map.panTo(sltItem.position);
     }
@@ -99,25 +109,26 @@ const KakaoMap = () => {
     moOverlay?.setMap(null);
     if (moPlace && moPlaceDispathcer && sltItemDispatch) {
       const p = new kakao.maps.LatLng(Number(moPlace.y), Number(moPlace.x));
-      setMoOverlay(addOverlay(map, p, 
-      <MouseOverOverlay 
-        position={p} 
-        place={moPlace} 
-        handleMouseLeave={() => {
-          moPlaceDispathcer({
-            type: 'clear'
-          })
-        }}
-        handleClick={() => {
-          sltItemDispatch({
-            type: 'set',
-            payload: {
-              position:p,
-              title: moPlace.place_name,
-            }
-          })
-        }}
-      />))
+      const newMouseOverOverlay = createOverlay(map, p, 
+        <MouseOverOverlay 
+          position={p} 
+          place={moPlace} 
+          handleMouseLeave={() => {
+            moPlaceDispathcer({
+              type: 'clear'
+            })
+          }}
+          handleClick={() => {
+            sltItemDispatch({
+              type: 'set',
+              payload: {
+                position:p,
+                title: moPlace.place_name,
+              }
+            })
+          }}
+        />)
+      setMoOverlay(newMouseOverOverlay)
     }
   }, [moPlace])
 
@@ -129,7 +140,7 @@ const KakaoMap = () => {
       markers.forEach((marker) => marker.setMap(null));
       const aMarkers = pList.data.map((e) => {
         const position = new kakao.maps.LatLng(Number(e.y), Number(e.x));
-        const marker = addMarker(map, position);
+        const marker = createMarker(map, position);
         kakao.maps.event.addListener(marker, 'mouseover', function () {
           moPlaceDispathcer({
             type: 'set',
@@ -166,22 +177,22 @@ const KakaoMap = () => {
   }, [bounds])
 
   // 현재 위치로 이동 클릭
-  const [curOverlay, setCurOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
+  const [currentOverlay, setCurrentOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   const handleCurLocationClick = () => {
     if (!map) return;
     navigator.geolocation.getCurrentPosition((e) => {
       const { latitude, longitude } = e.coords;
       const p = new kakao.maps.LatLng(latitude, longitude);
       map.panTo(p);
-      curOverlay?.setMap(null);
-      const aCurOverlay = addOverlay(
+      currentOverlay?.setMap(null);
+      const newCurrentOverlay = createOverlay(
         map,
         p,
         <div className="w-3 h-3 bg-red-500 border border-red-300 rounded-full">
           <span className="sr-only">Current Spot</span>
         </div>
       );
-      setCurOverlay(aCurOverlay);
+      setCurrentOverlay(newCurrentOverlay);
     });
   }
 

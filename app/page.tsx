@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import KakaoMap, { addOverlay } from './map/KakaoMap';
+import KakaoMap from './map/KakaoMap';
 import Nav from './layout/Nav';
 import Drawer from './layout/Drawer';
 import PlaceList from './places/PlaceList';
