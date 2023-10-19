@@ -1,5 +1,7 @@
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useReducer, useState } from "react";
-import { History, HistoryAction } from "./types";
+import {
+  Dispatch, ReactNode, SetStateAction, createContext, useContext, useReducer, useState,
+} from 'react';
+import { History, HistoryAction } from './types';
 
 const HistoryContext = createContext<History>([]);
 
@@ -21,7 +23,7 @@ function Reducer(history: History, action: HistoryAction) {
   }
 }
 
-export const HistoryProvider = ({ children }: {children: ReactNode}) => {
+export function HistoryProvider({ children }: {children: ReactNode}) {
   const [history, dispatch] = useReducer(Reducer, []);
   return (
     <HistoryContext.Provider value={history}>
@@ -29,13 +31,9 @@ export const HistoryProvider = ({ children }: {children: ReactNode}) => {
         {children}
       </HistoryDispatchContext.Provider>
     </HistoryContext.Provider>
-  )
+  );
 }
 
-export const useHistory = () => {
-  return useContext(HistoryContext);
-}
+export const useHistory = () => useContext(HistoryContext);
 
-export const useHistoryDispatch = () => {
-  return useContext(HistoryDispatchContext);
-}
+export const useHistoryDispatch = () => useContext(HistoryDispatchContext);
