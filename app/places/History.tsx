@@ -5,6 +5,7 @@ import {
 } from '../stores/History/HistoryContext';
 import { ClipboardSvg, LeftArrowSvg, MapSvg, XSvg } from '../svg';
 import BlueButton from '../common/BlueButton';
+import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 
 type Props = {
   handleClick: MouseEventHandler<HTMLButtonElement>;
@@ -37,6 +38,7 @@ function format(date: Date) {
 export default function History({ handleClick }: Props) {
   const history = useHistory();
   const historyDispatch = useHistoryDispatch();
+  const sltItemDispatch = useSelectedItemDispatch();
   return (
     <div className="overflow-y-scroll grow">
       <div className="flex justify-between">
@@ -78,11 +80,20 @@ export default function History({ handleClick }: Props) {
                     <BlueButton
                       onClick={() => {}}
                     >
+                      <span className='sr-only'>copy</span>
                       <ClipboardSvg />
                     </BlueButton>
                     <BlueButton
-                      onClick={() => {}}
+                      onClick={() => {
+                        if (sltItemDispatch) {
+                          sltItemDispatch!({
+                            type:'set',
+                            payload: {...e, panto: true}
+                          })
+                        }
+                      }}
                     >
+                      <span className='sr-only'>moveTo</span>
                       <MapSvg />
                     </BlueButton>
                     <BlueButton
@@ -92,11 +103,12 @@ export default function History({ handleClick }: Props) {
                             type: 'replace',
                             payload: history.filter(
                               (item) => item.key !== e.key
-                            ),
-                          });
-                        }
-                      }}
+                              ),
+                            });
+                          }
+                        }}
                     >
+                      <span className='sr-only'>close</span>
                       <XSvg />
                     </BlueButton>
                   </div>
