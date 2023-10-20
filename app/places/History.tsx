@@ -45,12 +45,14 @@ export default function History({ handleClick }: Props) {
     <div className="overflow-y-scroll grow">
       <div className="flex justify-between">
         <button
+          type="button"
           className="flex items-center justify-center text-xs text-white border rounded-md bg-slate-500 w-7 h-7 hover:bg-slate-400 active:bg-slate-500"
           onClick={handleClick}
         >
           <LeftArrowSvg />
         </button>
         <button
+          type="button"
           className="px-2 text-xs text-white border rounded-md bg-slate-500 hover:bg-slate-400 active:bg-slate-500"
           onClick={() => {
             historyDispatch!({

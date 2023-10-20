@@ -105,6 +105,7 @@ export default function PlaceList() {
           <div className="flex flex-col gap-1 p-2 overflow-y-scroll grow">
             <div className="flex justify-between">
               <button
+                type="button"
                 className="px-2 text-xs text-white border rounded-md bg-slate-500 hover:bg-slate-400 active:bg-slate-500"
                 onClick={() => setShowHistory(true)}
               >
@@ -121,7 +122,10 @@ export default function PlaceList() {
             {pList ? (
               pList.data.map((e) => (
                 <div
+                  role="button"
+                  tabIndex={0}
                   key={e.id}
+                  onKeyDown={() => {}}
                   onClick={() => {
                     if (!sltItemDispatch) return;
                     const position = new kakao.maps.LatLng(
@@ -140,6 +144,9 @@ export default function PlaceList() {
                   onMouseOver={() => {
                     if (!moPlaceDispatch) return;
                     moPlaceDispatch({ type: 'set', payload: { place: e } });
+                  }}
+                  onFocus={() => {
+
                   }}
                   onMouseLeave={() => {
                     if (!moPlaceDispatch) return;
