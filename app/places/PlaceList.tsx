@@ -1,5 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FormEventHandler, useEffect, useRef, useState } from 'react';
+import {
+  FormEventHandler, useEffect, useRef, useState,
+} from 'react';
+import { useRouter } from 'next/navigation';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import {
   usePlaceSearchList,
@@ -9,7 +12,6 @@ import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPla
 import Pagination from '../common/Pagination';
 import TextHighligher from '../common/TextHighligher';
 import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
-import { useRouter } from 'next/navigation';
 import { useBoundsDispatch } from '../stores/Bounds/BoundsContext';
 import History from './History';
 
@@ -57,7 +59,7 @@ export default function PlaceList() {
             },
           });
           positions.current = data.map(
-            (e) => new kakao.maps.LatLng(Number(e.y), Number(e.x))
+            (e) => new kakao.maps.LatLng(Number(e.y), Number(e.x)),
           );
           if (changeable.current) {
             changeMapBounds();
@@ -109,42 +111,44 @@ export default function PlaceList() {
                 이전 선택 기록
               </button>
               <div className="text-sm text-slate-800">
-                검색결과: {pList?.pagination.totalCount ?? 0} 건
+                검색결과:
+                {' '}
+                {pList?.pagination.totalCount ?? 0}
+                {' '}
+                건
               </div>
             </div>
             {pList ? (
-              pList.data.map((e) => {
-                return (
-                  <div
-                    key={e.id}
-                    onClick={() => {
-                      if (!sltItemDispatch) return;
-                      const position = new kakao.maps.LatLng(
-                        Number(e.y),
-                        Number(e.x)
-                      );
-                      sltItemDispatch({
-                        type: 'set',
-                        payload: {
-                          title: e.place_name,
-                          position,
-                          panto: true,
-                        }
-                      });
-                    }}
-                    onMouseOver={() => {
-                      if (!moPlaceDispatch) return;
-                      moPlaceDispatch({ type: 'set', payload: { place: e } });
-                    }}
-                    onMouseLeave={() => {
-                      if (!moPlaceDispatch) return;
-                      moPlaceDispatch({ type: 'clear' });
-                    }}
-                  >
-                    <TextHighligher keyword={keyword} text={e.place_name} />
-                  </div>
-                );
-              })
+              pList.data.map((e) => (
+                <div
+                  key={e.id}
+                  onClick={() => {
+                    if (!sltItemDispatch) return;
+                    const position = new kakao.maps.LatLng(
+                      Number(e.y),
+                      Number(e.x),
+                    );
+                    sltItemDispatch({
+                      type: 'set',
+                      payload: {
+                        title: e.place_name,
+                        position,
+                        panto: true,
+                      },
+                    });
+                  }}
+                  onMouseOver={() => {
+                    if (!moPlaceDispatch) return;
+                    moPlaceDispatch({ type: 'set', payload: { place: e } });
+                  }}
+                  onMouseLeave={() => {
+                    if (!moPlaceDispatch) return;
+                    moPlaceDispatch({ type: 'clear' });
+                  }}
+                >
+                  <TextHighligher keyword={keyword} text={e.place_name} />
+                </div>
+              ))
             ) : (
               <span className="text-gray-600">검색결과가 없습니다</span>
             )}

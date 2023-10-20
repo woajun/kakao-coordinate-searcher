@@ -8,7 +8,6 @@ type Props = {
   handleCopyClick: MouseEventHandler<HTMLButtonElement>;
 };
 
-
 export default function SlectedItemOverlay({ position, title, handleCopyClick }: Props) {
   return (
     <div className="arrow absolute bottom-0 -translate-x-1/2 pb-[9px] opacity-90">
@@ -19,22 +18,22 @@ export default function SlectedItemOverlay({ position, title, handleCopyClick }:
         onTouchStart={(e) => e.stopPropagation()}
       >
         <h1 className="font-bold text-center">{title}</h1>
-        <div className='flex items-center gap-2'>
-        <div>
-          <div className="pt-1">
-            <span className="pr-1 font-bold w-30">위도</span>
-            <span>{position.getLat()}</span>
-          </div>
+        <div className="flex items-center gap-2">
           <div>
-            <span className="pr-1 font-bold w-30">경도</span>
-            <span>{position.getLng()}</span>
+            <div className="pt-1">
+              <span className="pr-1 font-bold w-30">위도</span>
+              <span>{position.getLat()}</span>
+            </div>
+            <div>
+              <span className="pr-1 font-bold w-30">경도</span>
+              <span>{position.getLng()}</span>
+            </div>
           </div>
-        </div>
-        <BlueButton 
-          onClick={handleCopyClick}
-        >
-          <ClipboardSvg />
-        </BlueButton>
+          <BlueButton
+            onClick={handleCopyClick}
+          >
+            <ClipboardSvg />
+          </BlueButton>
         </div>
       </div>
     </div>

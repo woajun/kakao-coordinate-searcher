@@ -7,11 +7,9 @@ import {
 } from 'react';
 import { MouseOverPlaceAction } from './types';
 
-const MouseOverPlaceContext =
-  createContext<kakao.maps.services.PlacesSearchResultItem | null>(null);
+const MouseOverPlaceContext = createContext<kakao.maps.services.PlacesSearchResultItem | null>(null);
 
-const MouseOverPlaceDispatchContext =
-  createContext<Dispatch<MouseOverPlaceAction> | null>(null);
+const MouseOverPlaceDispatchContext = createContext<Dispatch<MouseOverPlaceAction> | null>(null);
 
 type Props = {
   children: ReactNode;
@@ -19,7 +17,7 @@ type Props = {
 
 function MouseOverPlaceReducer(
   _: kakao.maps.services.PlacesSearchResultItem | null,
-  action: MouseOverPlaceAction
+  action: MouseOverPlaceAction,
 ): kakao.maps.services.PlacesSearchResultItem | null {
   switch (action.type) {
     case 'set': {
@@ -34,7 +32,7 @@ function MouseOverPlaceReducer(
   }
 }
 
-export const MouseOverPlaceProvider = ({ children }: Props) => {
+export function MouseOverPlaceProvider({ children }: Props) {
   const [place, dispatch] = useReducer(MouseOverPlaceReducer, null);
 
   return (
@@ -44,12 +42,8 @@ export const MouseOverPlaceProvider = ({ children }: Props) => {
       </MouseOverPlaceDispatchContext.Provider>
     </MouseOverPlaceContext.Provider>
   );
-};
+}
 
-export const useMouseOverPlace = () => {
-  return useContext(MouseOverPlaceContext);
-};
+export const useMouseOverPlace = () => useContext(MouseOverPlaceContext);
 
-export const useMouseOverPlaceDispatch = () => {
-  return useContext(MouseOverPlaceDispatchContext);
-};
+export const useMouseOverPlaceDispatch = () => useContext(MouseOverPlaceDispatchContext);

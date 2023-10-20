@@ -3,7 +3,9 @@ import {
   useHistory,
   useHistoryDispatch,
 } from '../stores/History/HistoryContext';
-import { ClipboardSvg, LeftArrowSvg, MapSvg, XSvg } from '../svg';
+import {
+  ClipboardSvg, LeftArrowSvg, MapSvg, XSvg,
+} from '../svg';
 import BlueButton from '../common/BlueButton';
 import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 
@@ -69,8 +71,14 @@ export default function History({ handleClick }: Props) {
               >
                 <div>
                   <div className="text-sm font-semibold">{e.title}</div>
-                  <div className="text-xs">위도 {e.position.getLat()}</div>
-                  <div className="text-xs">경도 {e.position.getLng()}</div>
+                  <div className="text-xs">
+                    위도
+                    {e.position.getLat()}
+                  </div>
+                  <div className="text-xs">
+                    경도
+                    {e.position.getLng()}
+                  </div>
                 </div>
                 <div className="flex flex-col justify-between shrink-0">
                   <p className="flex justify-end text-xs text-slate-600">
@@ -80,20 +88,20 @@ export default function History({ handleClick }: Props) {
                     <BlueButton
                       onClick={() => {}}
                     >
-                      <span className='sr-only'>copy</span>
+                      <span className="sr-only">copy</span>
                       <ClipboardSvg />
                     </BlueButton>
                     <BlueButton
                       onClick={() => {
                         if (sltItemDispatch) {
                           sltItemDispatch!({
-                            type:'set',
-                            payload: {...e, panto: true}
-                          })
+                            type: 'set',
+                            payload: { ...e, panto: true },
+                          });
                         }
                       }}
                     >
-                      <span className='sr-only'>moveTo</span>
+                      <span className="sr-only">moveTo</span>
                       <MapSvg />
                     </BlueButton>
                     <BlueButton
@@ -102,13 +110,13 @@ export default function History({ handleClick }: Props) {
                           historyDispatch({
                             type: 'replace',
                             payload: history.filter(
-                              (item) => item.key !== e.key
-                              ),
-                            });
-                          }
-                        }}
+                              (item) => item.key !== e.key,
+                            ),
+                          });
+                        }
+                      }}
                     >
-                      <span className='sr-only'>close</span>
+                      <span className="sr-only">close</span>
                       <XSvg />
                     </BlueButton>
                   </div>

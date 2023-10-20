@@ -1,4 +1,4 @@
-import { createFuzzyMatcher } from "./searchKorean";
+import { createFuzzyMatcher } from './searchKorean';
 
 type Props = {
   keyword: string;
@@ -9,7 +9,8 @@ export default function TextHighligher({ keyword, text }: Props) {
   const regex = createFuzzyMatcher(keyword);
   const v = text.replace(
     regex,
-    (v) => `<span class='bg-gray-300'>${v}</span>`
+    (value) => `<span class='bg-gray-300'>${value}</span>`,
   );
-  return <div dangerouslySetInnerHTML={{ __html: v }}></div>;
+  // eslint-disable-next-line react/no-danger
+  return <div dangerouslySetInnerHTML={{ __html: v }} />;
 }

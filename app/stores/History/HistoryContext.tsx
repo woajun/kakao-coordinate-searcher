@@ -23,7 +23,7 @@ function Reducer(history: History, action: HistoryAction) {
   }
 }
 
-export function HistoryProvider({ children }: {children: ReactNode}) {
+export function HistoryProvider({ children }: { children: ReactNode }) {
   const [history, dispatch] = useReducer(Reducer, []);
   return (
     <HistoryContext.Provider value={history}>

@@ -9,8 +9,7 @@ import { PlaceSearchList, PlaceSearchListAction } from './types';
 
 const PlaceSearchListContext = createContext<PlaceSearchList | null>(null);
 
-const PlaceSearchListDispatchContext =
-  createContext<Dispatch<PlaceSearchListAction> | null>(null);
+const PlaceSearchListDispatchContext = createContext<Dispatch<PlaceSearchListAction> | null>(null);
 
 type Props = {
   children: ReactNode;
@@ -18,7 +17,7 @@ type Props = {
 
 function PlaceSearchListReducer(
   _: PlaceSearchList | null,
-  action: PlaceSearchListAction
+  action: PlaceSearchListAction,
 ): PlaceSearchList | null {
   switch (action.type) {
     case 'set': {
@@ -36,7 +35,7 @@ function PlaceSearchListReducer(
   }
 }
 
-export const PlaceSearchListProvider = ({ children }: Props) => {
+export function PlaceSearchListProvider({ children }: Props) {
   const [placeSearchList, dispatch] = useReducer(PlaceSearchListReducer, null);
 
   return (
@@ -46,12 +45,8 @@ export const PlaceSearchListProvider = ({ children }: Props) => {
       </PlaceSearchListDispatchContext.Provider>
     </PlaceSearchListContext.Provider>
   );
-};
+}
 
-export const usePlaceSearchList = () => {
-  return useContext(PlaceSearchListContext);
-};
+export const usePlaceSearchList = () => useContext(PlaceSearchListContext);
 
-export const usePlaceSearchListDispatch = () => {
-  return useContext(PlaceSearchListDispatchContext);
-};
+export const usePlaceSearchListDispatch = () => useContext(PlaceSearchListDispatchContext);

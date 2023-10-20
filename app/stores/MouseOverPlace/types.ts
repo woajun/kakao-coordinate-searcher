@@ -11,4 +11,4 @@ type ClearAction = {
 
 export type MouseOverPlaceAction =
   | SetAction
-  | ClearAction
+  | ClearAction;

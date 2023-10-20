@@ -1,6 +1,16 @@
 {
-  "extends": ["next/core-web-vitals", "airbnb", "airbnb-typescript"],
+  "extends": [
+    "next/core-web-vitals",
+    "airbnb",
+    "airbnb-typescript"
+  ],
   "parserOptions": {
-   "project": "./tsconfig.json"
- }
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "no-plusplus" : "off",
+    "react/button-has-type": "warn",
+    "react/react-in-jsx-scope": "off",
+    "react/require-default-props": "off"
+  }
 }

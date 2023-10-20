@@ -1,11 +1,11 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 type Props = {
   drawer: boolean
-}
+};
 
-export default function Nav({drawer}: Props) {
+export default function Nav({ drawer }: Props) {
   return (
     <nav className="relative flex items-center h-12 border-b bg-slate-100 border-slate-300">
       <div className="lg:hidden ps-2">

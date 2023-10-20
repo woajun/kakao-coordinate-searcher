@@ -1,6 +1,6 @@
 export type Bounds = {
   positions: kakao.maps.LatLng[]
-}
+};
 
 type ApplyAction = {
   type: 'apply';
@@ -15,4 +15,4 @@ type ClearAction = {
 
 export type BoundsAction =
   | ApplyAction
-  | ClearAction
+  | ClearAction;

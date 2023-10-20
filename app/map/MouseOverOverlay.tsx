@@ -7,8 +7,9 @@ type Props = {
   handleClick: MouseEventHandler<HTMLDivElement>;
 };
 
-
-export default function Overlay({ position, place, handleMouseLeave, handleClick }: Props) {
+export default function Overlay({
+  position, place, handleMouseLeave, handleClick,
+}: Props) {
   const handleOverlayMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
     e.stopPropagation();
   };

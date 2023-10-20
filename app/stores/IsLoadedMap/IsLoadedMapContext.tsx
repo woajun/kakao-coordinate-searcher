@@ -1,4 +1,6 @@
-import { ReactNode, createContext, useContext, useState } from 'react';
+import {
+  ReactNode, createContext, useContext, useState,
+} from 'react';
 import Script from 'next/script';
 
 const isLoadedMapContext = createContext(false);
@@ -7,7 +9,7 @@ type Props = {
   children: ReactNode;
 };
 
-export const IsLoadedMapProvider = ({ children }: Props) => {
+export function IsLoadedMapProvider({ children }: Props) {
   const [isLoadedMap, setIsLoadedMap] = useState(false);
   return (
     <>
@@ -24,8 +26,6 @@ export const IsLoadedMapProvider = ({ children }: Props) => {
       </isLoadedMapContext.Provider>
     </>
   );
-};
+}
 
-export const useIsLoadedMap = () => {
-  return useContext(isLoadedMapContext);
-};
+export const useIsLoadedMap = () => useContext(isLoadedMapContext);

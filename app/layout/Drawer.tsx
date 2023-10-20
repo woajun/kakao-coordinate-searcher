@@ -8,7 +8,7 @@ type Props = {
 
 export default function Drawer({ drawer, children }: Props) {
   return (
-    <div className={`z-20 w-full h-full absolute flex pointer-events-none`}>
+    <div className="z-20 w-full h-full absolute flex pointer-events-none">
       <div
         className={`${
           !drawer && '-translate-x-full'
@@ -21,7 +21,7 @@ export default function Drawer({ drawer, children }: Props) {
         className={`absolute w-full h-full bg-black grow opacity-30 lg:hidden pointer-events-auto ${
           !drawer && 'hidden'
         }`}
-      ></Link>
+      />
     </div>
   );
 }

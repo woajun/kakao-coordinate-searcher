@@ -1,7 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import {
+  useEffect, useRef, useState, useCallback,
+} from 'react';
 import { createRoot } from 'react-dom/client';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import { usePlaceSearchList } from '../stores/PlaceSearchList/PlaceSearchListContext';
@@ -20,7 +23,7 @@ function createMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
 function createOverlay(
   map: kakao.maps.Map,
   position: kakao.maps.LatLng,
-  jsxElement: JSX.Element
+  jsxElement: JSX.Element,
 ) {
   const content = document.createElement('div');
   const root = createRoot(content);
@@ -28,7 +31,7 @@ function createOverlay(
   return new kakao.maps.CustomOverlay({ content, map, position });
 }
 
-const KakaoMap = () => {
+function KakaoMap() {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [showSnakbar, setShowSnakbar] = useState(false);
 
@@ -39,33 +42,32 @@ const KakaoMap = () => {
   const historyDispatch = useHistoryDispatch();
   useEffect(() => {
     sltOverlay?.setMap(null);
-    if(!sltItem || !map) return
+    if (!sltItem || !map) return;
     const newSelectedItemOverlay = createOverlay(
-      map, 
-      sltItem.position, 
-      <SlectedItemOverlay 
-        position={sltItem.position} 
-        title={sltItem.title} 
+      map,
+      sltItem.position,
+      <SlectedItemOverlay
+        position={sltItem.position}
+        title={sltItem.title}
         handleCopyClick={async () => {
-            setShowSnakbar(false);
-            const text = `{latitude:${sltItem.position.getLat()},longitude:${sltItem.position.getLng()}}`;
-            await navigator.clipboard.writeText(text);
-            setShowSnakbar(true);
-          }
-        }
-      />
-    )
-    setSltOverlay(newSelectedItemOverlay)
+          setShowSnakbar(false);
+          const text = `{latitude:${sltItem.position.getLat()},longitude:${sltItem.position.getLng()}}`;
+          await navigator.clipboard.writeText(text);
+          setShowSnakbar(true);
+        }}
+      />,
+    );
+    setSltOverlay(newSelectedItemOverlay);
     if (sltItem.panto) {
       map.panTo(sltItem.position);
     }
     if (historyDispatch) {
       historyDispatch({
         type: 'add',
-        payload: sltItem
-      })
+        payload: sltItem,
+      });
     }
-  }, [sltItem])
+  }, [sltItem]);
 
   // 스낵바 1.5초 후 닫기
   useEffect(() => {
@@ -75,7 +77,7 @@ const KakaoMap = () => {
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [showSnakbar])
+  }, [showSnakbar]);
 
   // 카카오맵 API가 로드 되면 지도와 지도 클릭이벤트 생성
   const isLoaded = useIsLoadedMap();
@@ -93,9 +95,9 @@ const KakaoMap = () => {
         sltItemDispatch({
           type: 'set',
           payload: {
-            position: e.latLng, title: "클릭 위치"
-          }
-        })
+            position: e.latLng, title: '클릭 위치',
+          },
+        });
       });
     }
   }, [isLoaded]);
@@ -105,32 +107,35 @@ const KakaoMap = () => {
   const moPlace = useMouseOverPlace();
   const [moOverlay, setMoOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   useEffect(() => {
-    if(!map) return;
+    if (!map) return;
     moOverlay?.setMap(null);
     if (moPlace && moPlaceDispathcer && sltItemDispatch) {
       const p = new kakao.maps.LatLng(Number(moPlace.y), Number(moPlace.x));
-      const newMouseOverOverlay = createOverlay(map, p, 
-        <MouseOverOverlay 
-          position={p} 
-          place={moPlace} 
+      const newMouseOverOverlay = createOverlay(
+        map,
+        p,
+        <MouseOverOverlay
+          position={p}
+          place={moPlace}
           handleMouseLeave={() => {
             moPlaceDispathcer({
-              type: 'clear'
-            })
+              type: 'clear',
+            });
           }}
           handleClick={() => {
             sltItemDispatch({
               type: 'set',
               payload: {
-                position:p,
+                position: p,
                 title: moPlace.place_name,
-              }
-            })
+              },
+            });
           }}
-        />)
-      setMoOverlay(newMouseOverOverlay)
+        />,
+      );
+      setMoOverlay(newMouseOverOverlay);
     }
-  }, [moPlace])
+  }, [moPlace]);
 
   // 장소 검색 결과에 따라 지도에 마커 생성
   const [markers, setMarkers] = useState<kakao.maps.Marker[]>([]);
@@ -141,7 +146,7 @@ const KakaoMap = () => {
       const aMarkers = pList.data.map((e) => {
         const position = new kakao.maps.LatLng(Number(e.y), Number(e.x));
         const marker = createMarker(map, position);
-        kakao.maps.event.addListener(marker, 'mouseover', function () {
+        kakao.maps.event.addListener(marker, 'mouseover', () => {
           moPlaceDispathcer({
             type: 'set',
             payload: {
@@ -149,20 +154,20 @@ const KakaoMap = () => {
             },
           });
         });
-        kakao.maps.event.addListener(marker, 'click', function () {
+        kakao.maps.event.addListener(marker, 'click', () => {
           sltItemDispatch({
             type: 'set',
             payload: {
               position,
               title: e.place_name,
-            }
+            },
           });
         });
         return marker;
       });
       setMarkers(aMarkers);
     }
-  }, [pList])
+  }, [pList]);
 
   // bounds 변경시 지도 범위 재설정
   const bounds = useBounds();
@@ -174,7 +179,7 @@ const KakaoMap = () => {
       map.setBounds(newBounds);
       boundsDispatch({ type: 'clear' });
     }
-  }, [bounds])
+  }, [bounds]);
 
   // 현재 위치로 이동 클릭
   const [currentOverlay, setCurrentOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
@@ -190,11 +195,11 @@ const KakaoMap = () => {
         p,
         <div className="w-3 h-3 bg-red-500 border border-red-300 rounded-full">
           <span className="sr-only">Current Spot</span>
-        </div>
+        </div>,
       );
       setCurrentOverlay(newCurrentOverlay);
     });
-  }
+  };
 
   return (
     <>
@@ -205,9 +210,9 @@ const KakaoMap = () => {
       >
         복사 완료 ✔
       </div>
-      <div ref={palette} className="w-full h-full"></div>
+      <div ref={palette} className="w-full h-full" />
       <div
-        className={`w-10 h-10 fixed flex justify-center items-center bottom-8 right-6 z-10 text-white bg-blue-700 hover:bg-blue-800 opacity-90 rounded-full`}
+        className="w-10 h-10 fixed flex justify-center items-center bottom-8 right-6 z-10 text-white bg-blue-700 hover:bg-blue-800 opacity-90 rounded-full"
         onClick={handleCurLocationClick}
       >
         <span className="sr-only">Current Location</span>
@@ -215,6 +220,6 @@ const KakaoMap = () => {
       </div>
     </>
   );
-};
+}
 
 export default KakaoMap;
