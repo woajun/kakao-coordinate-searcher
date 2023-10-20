@@ -1,5 +1,5 @@
 import {
-  Dispatch, ReactNode, SetStateAction, createContext, useContext, useReducer, useState,
+  Dispatch, ReactNode, createContext, useContext, useReducer,
 } from 'react';
 import { History, HistoryAction } from './types';
 

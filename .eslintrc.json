@@ -11,6 +11,7 @@
     "no-plusplus" : "off",
     "react/button-has-type": "warn",
     "react/react-in-jsx-scope": "off",
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "react-hooks/exhaustive-deps": "off"
   }
 }

@@ -1,9 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-
 'use client';
 
 import {
-  useEffect, useRef, useState, useCallback,
+  useEffect, useRef, useState,
 } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
@@ -77,6 +75,7 @@ function KakaoMap() {
       }, 1500);
       return () => clearTimeout(timer);
     }
+    return () => {};
   }, [showSnakbar]);
 
   // 카카오맵 API가 로드 되면 지도와 지도 클릭이벤트 생성
@@ -211,13 +210,14 @@ function KakaoMap() {
         복사 완료 ✔
       </div>
       <div ref={palette} className="w-full h-full" />
-      <div
-        className="w-10 h-10 fixed flex justify-center items-center bottom-8 right-6 z-10 text-white bg-blue-700 hover:bg-blue-800 opacity-90 rounded-full"
+      <button
+        type="button"
+        className="w-10 h-10 fixed flex justify-center items-center bottom-8 right-6 z-10 text-white bg-blue-700 hover:bg-blue-800 opacity-90 rounded-full active:ring-4"
         onClick={handleCurLocationClick}
       >
         <span className="sr-only">Current Location</span>
         <MarkerSvg />
-      </div>
+      </button>
     </>
   );
 }
