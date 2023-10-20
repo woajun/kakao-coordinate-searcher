@@ -98,7 +98,7 @@ export default function History({ handleClick }: Props) {
                         if (sltItemDispatch) {
                           sltItemDispatch!({
                             type: 'set',
-                            payload: { ...e, panto: true },
+                            payload: { ...e, panto: true, noRecord: true },
                           });
                         }
                       }}

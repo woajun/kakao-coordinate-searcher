@@ -59,7 +59,7 @@ function KakaoMap() {
     if (sltItem.panto) {
       map.panTo(sltItem.position);
     }
-    if (historyDispatch) {
+    if (historyDispatch && !sltItem.noRecord) {
       historyDispatch({
         type: 'add',
         payload: sltItem,

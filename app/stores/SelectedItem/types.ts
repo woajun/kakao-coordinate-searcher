@@ -2,6 +2,7 @@ export type SelectedItem = {
   title: string
   position: kakao.maps.LatLng
   panto?: boolean
+  noRecord?: boolean
 };
 
 type SetAction = {
