@@ -7,11 +7,19 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
+  "ignorePatterns": [
+    "next.config.js",
+    "postcss.config.js"
+  ],
   "rules": {
     "no-plusplus" : "off",
     "react/button-has-type": "warn",
     "react/react-in-jsx-scope": "off",
     "react/require-default-props": "off",
-    "react-hooks/exhaustive-deps": "off"
+    "react-hooks/exhaustive-deps": "off",
+    "react/destructuring-assignment": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "react/jsx-props-no-spreading": ["error", { "html": "ignore" }]
   }
 }

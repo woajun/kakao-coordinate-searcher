@@ -1,5 +1,5 @@
 import {
-  Dispatch, ReactNode, createContext, useContext, useReducer, useState,
+  Dispatch, ReactNode, createContext, useContext, useReducer,
 } from 'react';
 import { SelectedItem, SelectedItemAction } from './types';
 

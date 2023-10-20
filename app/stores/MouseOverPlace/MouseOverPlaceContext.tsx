@@ -7,7 +7,8 @@ import {
 } from 'react';
 import { MouseOverPlaceAction } from './types';
 
-const MouseOverPlaceContext = createContext<kakao.maps.services.PlacesSearchResultItem | null>(null);
+const MouseOverPlaceContext = createContext<
+kakao.maps.services.PlacesSearchResultItem | null>(null);
 
 const MouseOverPlaceDispatchContext = createContext<Dispatch<MouseOverPlaceAction> | null>(null);
 
