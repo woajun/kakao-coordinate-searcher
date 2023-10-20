@@ -20,20 +20,20 @@ function format(date: Date) {
   const diff = (end.getTime() - start.getTime()) / 1000;
 
   const times = [
-    { name: '년', milliSeconds: 60 * 60 * 24 * 365 },
-    { name: '개월', milliSeconds: 60 * 60 * 24 * 30 },
-    { name: '일', milliSeconds: 60 * 60 * 24 },
-    { name: '시간', milliSeconds: 60 * 60 },
-    { name: '분', milliSeconds: 60 },
+    { name: '년', ms: 60 * 60 * 24 * 365 },
+    { name: '개월', ms: 60 * 60 * 24 * 30 },
+    { name: '일', ms: 60 * 60 * 24 },
+    { name: '시간', ms: 60 * 60 },
+    { name: '분', ms: 60 },
   ];
 
-  for (const value of times) {
-    const betweenTime = Math.floor(diff / value.milliSeconds);
+  const result = times.find((t) => Math.floor(diff / t.ms) > 0);
 
-    if (betweenTime > 0) {
-      return `${betweenTime}${value.name} 전`;
-    }
+  if (result) {
+    const betweenTime = Math.floor(diff / result.ms);
+    return `${betweenTime}${result.name} 전`;
   }
+
   return '방금 전';
 }
 
