@@ -9,6 +9,7 @@ import {
 import BlueButton from '../common/BlueButton';
 import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
+import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
 
 type Props = {
   handleClick: MouseEventHandler<HTMLButtonElement>;
@@ -43,6 +44,7 @@ export default function History({ handleClick }: Props) {
   const historyDispatch = useHistoryDispatch();
   const sltItemDispatch = useSelectedItemDispatch();
   const moPlaceDispatch = useMouseOverPlaceDispatch();
+  const setShowSnakbar = useSnackbar();
   return (
     <div className="overflow-y-scroll grow">
       <div className="flex justify-between">
@@ -101,7 +103,14 @@ export default function History({ handleClick }: Props) {
                   </p>
                   <div className="flex gap-1">
                     <BlueButton
-                      onClick={() => {}}
+                      onClick={async () => {
+                        if (setShowSnakbar) {
+                          setShowSnakbar(false);
+                          const text = `{latitude:${e.position.getLat()},longitude:${e.position.getLng()}}`;
+                          await navigator.clipboard.writeText(text);
+                          setShowSnakbar(true);
+                        }
+                      }}
                     >
                       <span className="sr-only">copy</span>
                       <ClipboardSvg />
