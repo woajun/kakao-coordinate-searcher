@@ -13,6 +13,7 @@ import SlectedItemOverlay from './SlectedItemOverlay';
 import { useBounds, useBoundsDispatch } from '../stores/Bounds/BoundsContext';
 import { useHistoryDispatch } from '../stores/History/HistoryContext';
 import { MarkerSvg } from '../svg';
+import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
 
 function createMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -31,16 +32,16 @@ function createOverlay(
 
 function KakaoMap() {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const [showSnakbar, setShowSnakbar] = useState(false);
 
   // 선택된 장소 오버레이 생성
   const [sltOverlay, setSltOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   const sltItem = useSelectedItem();
   const sltItemDispatch = useSelectedItemDispatch();
   const historyDispatch = useHistoryDispatch();
+  const setShowSnakbar = useSnackbar();
   useEffect(() => {
     sltOverlay?.setMap(null);
-    if (!sltItem || !map) return;
+    if (!sltItem || !map || !setShowSnakbar) return;
     const newSelectedItemOverlay = createOverlay(
       map,
       sltItem.position,
@@ -66,17 +67,6 @@ function KakaoMap() {
       });
     }
   }, [sltItem]);
-
-  // 스낵바 1.5초 후 닫기
-  useEffect(() => {
-    if (showSnakbar) {
-      const timer = setTimeout(() => {
-        setShowSnakbar(false);
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-    return () => {};
-  }, [showSnakbar]);
 
   // 카카오맵 API가 로드 되면 지도와 지도 클릭이벤트 생성
   const isLoaded = useIsLoadedMap();
@@ -202,13 +192,6 @@ function KakaoMap() {
 
   return (
     <>
-      <div
-        className={`${
-          showSnakbar ? 'block' : 'hidden'
-        } fixed z-50 px-5 py-2 text-white bg-blue-700 rounded-md left-1/2 top-5 opacity-90`}
-      >
-        복사 완료 ✔
-      </div>
       <div ref={palette} className="w-full h-full" />
       <button
         type="button"

@@ -10,6 +10,7 @@ import { MouseOverPlaceProvider } from './stores/MouseOverPlace/MouseOverPlaceCo
 import { SelectedItemProvider } from './stores/SelectedItem/SelectedItemContext';
 import { BoundsProvider } from './stores/Bounds/BoundsContext';
 import { HistoryProvider } from './stores/History/HistoryContext';
+import { SnackbarProvider } from './stores/Snackbar/SnackbarContext';
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -18,26 +19,28 @@ type Props = {
 export default function Home({ searchParams }: Props) {
   const { drawer } = searchParams;
   return (
-    <IsLoadedMapProvider>
-      <PlaceSearchListProvider>
-        <MouseOverPlaceProvider>
-          <HistoryProvider>
-            <SelectedItemProvider>
-              <BoundsProvider>
-                <div className="flex flex-col w-screen h-screen">
-                  <Nav drawer={drawer === 'true'} />
-                  <div className="relative grow">
-                    <Drawer drawer={drawer === 'true'}>
-                      <PlaceList />
-                    </Drawer>
-                    <KakaoMap />
+    <SnackbarProvider>
+      <IsLoadedMapProvider>
+        <PlaceSearchListProvider>
+          <MouseOverPlaceProvider>
+            <HistoryProvider>
+              <SelectedItemProvider>
+                <BoundsProvider>
+                  <div className="flex flex-col w-screen h-screen">
+                    <Nav drawer={drawer === 'true'} />
+                    <div className="relative grow">
+                      <Drawer drawer={drawer === 'true'}>
+                        <PlaceList />
+                      </Drawer>
+                      <KakaoMap />
+                    </div>
                   </div>
-                </div>
-              </BoundsProvider>
-            </SelectedItemProvider>
-          </HistoryProvider>
-        </MouseOverPlaceProvider>
-      </PlaceSearchListProvider>
-    </IsLoadedMapProvider>
+                </BoundsProvider>
+              </SelectedItemProvider>
+            </HistoryProvider>
+          </MouseOverPlaceProvider>
+        </PlaceSearchListProvider>
+      </IsLoadedMapProvider>
+    </SnackbarProvider>
   );
 }
