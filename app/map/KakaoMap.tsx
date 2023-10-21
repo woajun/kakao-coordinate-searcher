@@ -109,13 +109,12 @@ function KakaoMap() {
     if (!map) return;
     moOverlay?.setMap(null);
     if (moPlace && moPlaceDispathcer && sltItemDispatch) {
-      const p = new kakao.maps.LatLng(Number(moPlace.y), Number(moPlace.x));
       const newMouseOverOverlay = createOverlay(
         map,
-        p,
+        moPlace.position,
         <MouseOverOverlay
-          position={p}
-          place={moPlace}
+          position={moPlace.position}
+          title={moPlace.title}
           handleMouseLeave={() => {
             moPlaceDispathcer({
               type: 'clear',
@@ -125,8 +124,8 @@ function KakaoMap() {
             sltItemDispatch({
               type: 'set',
               payload: {
-                position: p,
-                title: moPlace.place_name,
+                position: moPlace.position,
+                title: moPlace.title,
               },
             });
           }}
@@ -149,7 +148,8 @@ function KakaoMap() {
           moPlaceDispathcer({
             type: 'set',
             payload: {
-              place: e,
+              title: e.place_name,
+              position,
             },
           });
         });

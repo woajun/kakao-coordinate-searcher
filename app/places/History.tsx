@@ -8,6 +8,7 @@ import {
 } from '../svg';
 import BlueButton from '../common/BlueButton';
 import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
+import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 
 type Props = {
   handleClick: MouseEventHandler<HTMLButtonElement>;
@@ -41,6 +42,7 @@ export default function History({ handleClick }: Props) {
   const history = useHistory();
   const historyDispatch = useHistoryDispatch();
   const sltItemDispatch = useSelectedItemDispatch();
+  const moPlaceDispatch = useMouseOverPlaceDispatch();
   return (
     <div className="overflow-y-scroll grow">
       <div className="flex justify-between">
@@ -70,6 +72,17 @@ export default function History({ handleClick }: Props) {
               <div
                 key={e.key}
                 className="flex justify-between p-1 rounded-md hover:bg-slate-100"
+                onMouseOver={() => {
+                  if (!moPlaceDispatch) return;
+                  moPlaceDispatch({ type: 'set', payload: e });
+                }}
+                onFocus={() => {
+
+                }}
+                onMouseLeave={() => {
+                  if (!moPlaceDispatch) return;
+                  moPlaceDispatch({ type: 'clear' });
+                }}
               >
                 <div>
                   <div className="text-sm font-semibold">{e.title}</div>

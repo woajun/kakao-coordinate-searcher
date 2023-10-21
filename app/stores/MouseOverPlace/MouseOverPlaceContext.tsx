@@ -6,9 +6,10 @@ import {
   useReducer,
 } from 'react';
 import { MouseOverPlaceAction } from './types';
+import { SelectedItem } from '../SelectedItem/types';
 
 const MouseOverPlaceContext = createContext<
-kakao.maps.services.PlacesSearchResultItem | null>(null);
+SelectedItem | null>(null);
 
 const MouseOverPlaceDispatchContext = createContext<Dispatch<MouseOverPlaceAction> | null>(null);
 
@@ -17,12 +18,12 @@ type Props = {
 };
 
 function MouseOverPlaceReducer(
-  _: kakao.maps.services.PlacesSearchResultItem | null,
+  _: SelectedItem | null,
   action: MouseOverPlaceAction,
-): kakao.maps.services.PlacesSearchResultItem | null {
+): SelectedItem | null {
   switch (action.type) {
     case 'set': {
-      return action.payload.place;
+      return action.payload;
     }
     case 'clear': {
       return null;

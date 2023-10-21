@@ -1,8 +1,8 @@
+import { SelectedItem } from '../SelectedItem/types';
+
 type SetAction = {
   type: 'set';
-  payload: {
-    place: kakao.maps.services.PlacesSearchResultItem
-  };
+  payload: SelectedItem;
 };
 
 type ClearAction = {

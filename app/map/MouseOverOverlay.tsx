@@ -2,13 +2,13 @@ import { MouseEventHandler } from 'react';
 
 type Props = {
   position: kakao.maps.LatLng;
-  place: kakao.maps.services.PlacesSearchResultItem;
+  title: string;
   handleMouseLeave: MouseEventHandler<HTMLButtonElement>;
   handleClick: MouseEventHandler<HTMLButtonElement>;
 };
 
 export default function Overlay({
-  position, place, handleMouseLeave, handleClick,
+  position, title, handleMouseLeave, handleClick,
 }: Props) {
   const handleOverlayMouseDown: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.stopPropagation();
@@ -23,7 +23,7 @@ export default function Overlay({
         onMouseDown={handleOverlayMouseDown}
         onMouseLeave={handleMouseLeave}
       >
-        <h1 className="font-bold text-center">{place.place_name}</h1>
+        <h1 className="font-bold text-center">{title}</h1>
         <div className="pt-1">
           <span className="font-bold w-30">위도</span>
           <span>{position.getLat()}</span>

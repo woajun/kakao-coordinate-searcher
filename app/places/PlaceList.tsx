@@ -143,7 +143,17 @@ export default function PlaceList() {
                   }}
                   onMouseOver={() => {
                     if (!moPlaceDispatch) return;
-                    moPlaceDispatch({ type: 'set', payload: { place: e } });
+                    const position = new kakao.maps.LatLng(
+                      Number(e.y),
+                      Number(e.x),
+                    );
+                    moPlaceDispatch({
+                      type: 'set',
+                      payload: {
+                        title: e.place_name,
+                        position,
+                      },
+                    });
                   }}
                   onFocus={() => {
 
