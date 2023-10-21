@@ -1,46 +1,24 @@
 import { MouseEventHandler } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   useHistory,
   useHistoryDispatch,
 } from '../stores/History/HistoryContext';
 import {
-  ClipboardSvg, LeftArrowSvg, MapSvg, XSvg,
+  LeftArrowSvg,
 } from '../svg';
-import BlueButton from '../common/BlueButton';
 import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
+import HistoryItem from './HistoryItem';
 
 type Props = {
   handleClick: MouseEventHandler<HTMLButtonElement>;
 };
 
-function format(date: Date) {
-  const start = new Date(date);
-  const end = new Date();
-
-  const diff = (end.getTime() - start.getTime()) / 1000;
-
-  const times = [
-    { name: '년', ms: 60 * 60 * 24 * 365 },
-    { name: '개월', ms: 60 * 60 * 24 * 30 },
-    { name: '일', ms: 60 * 60 * 24 },
-    { name: '시간', ms: 60 * 60 },
-    { name: '분', ms: 60 },
-  ];
-
-  const result = times.find((t) => Math.floor(diff / t.ms) > 0);
-
-  if (result) {
-    const betweenTime = Math.floor(diff / result.ms);
-    return `${betweenTime}${result.name} 전`;
-  }
-
-  return '방금 전';
-}
-
 export default function History({ handleClick }: Props) {
   const history = useHistory();
+  const router = useRouter();
   const historyDispatch = useHistoryDispatch();
   const sltItemDispatch = useSelectedItemDispatch();
   const moPlaceDispatch = useMouseOverPlaceDispatch();
@@ -71,81 +49,45 @@ export default function History({ handleClick }: Props) {
         {history.length > 0 ? (
           history
             .map((e) => (
-              <div
+              <HistoryItem
                 key={e.key}
-                className="flex justify-between p-1 rounded-md hover:bg-slate-100"
+                item={e}
                 onMouseOver={() => {
                   if (!moPlaceDispatch) return;
                   moPlaceDispatch({ type: 'set', payload: e });
-                }}
-                onFocus={() => {
-
                 }}
                 onMouseLeave={() => {
                   if (!moPlaceDispatch) return;
                   moPlaceDispatch({ type: 'clear' });
                 }}
-              >
-                <div>
-                  <div className="text-sm font-semibold">{e.title}</div>
-                  <div className="text-xs">
-                    위도
-                    {e.position.getLat()}
-                  </div>
-                  <div className="text-xs">
-                    경도
-                    {e.position.getLng()}
-                  </div>
-                </div>
-                <div className="flex flex-col justify-between shrink-0">
-                  <p className="flex justify-end text-xs text-slate-600">
-                    {format(e.at)}
-                  </p>
-                  <div className="flex gap-1">
-                    <BlueButton
-                      onClick={async () => {
-                        if (setShowSnakbar) {
-                          setShowSnakbar(false);
-                          const text = `{latitude:${e.position.getLat()},longitude:${e.position.getLng()}}`;
-                          await navigator.clipboard.writeText(text);
-                          setShowSnakbar(true);
-                        }
-                      }}
-                    >
-                      <span className="sr-only">copy</span>
-                      <ClipboardSvg />
-                    </BlueButton>
-                    <BlueButton
-                      onClick={() => {
-                        if (sltItemDispatch) {
-                          sltItemDispatch!({
-                            type: 'set',
-                            payload: { ...e, panto: true, noRecord: true },
-                          });
-                        }
-                      }}
-                    >
-                      <span className="sr-only">moveTo</span>
-                      <MapSvg />
-                    </BlueButton>
-                    <BlueButton
-                      onClick={() => {
-                        if (historyDispatch) {
-                          historyDispatch({
-                            type: 'replace',
-                            payload: history.filter(
-                              (item) => item.key !== e.key,
-                            ),
-                          });
-                        }
-                      }}
-                    >
-                      <span className="sr-only">close</span>
-                      <XSvg />
-                    </BlueButton>
-                  </div>
-                </div>
-              </div>
+                onCopyClick={async () => {
+                  if (setShowSnakbar) {
+                    setShowSnakbar(false);
+                    const text = `{latitude:${e.position.getLat()},longitude:${e.position.getLng()}}`;
+                    await navigator.clipboard.writeText(text);
+                    setShowSnakbar(true);
+                  }
+                }}
+                onMapClick={() => {
+                  if (sltItemDispatch) {
+                    sltItemDispatch!({
+                      type: 'set',
+                      payload: { ...e, panto: true, noRecord: true },
+                    });
+                    router.push('?drawer=false');
+                  }
+                }}
+                onCloseClick={() => {
+                  if (historyDispatch) {
+                    historyDispatch({
+                      type: 'replace',
+                      payload: history.filter(
+                        (item) => item.key !== e.key,
+                      ),
+                    });
+                  }
+                }}
+              />
             ))
             .reverse()
         ) : (

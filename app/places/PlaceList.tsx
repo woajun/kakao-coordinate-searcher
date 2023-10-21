@@ -140,6 +140,7 @@ export default function PlaceList() {
                         panto: true,
                       },
                     });
+                    router.push('?drawer=false');
                   }}
                   onMouseOver={() => {
                     if (!moPlaceDispatch) return;

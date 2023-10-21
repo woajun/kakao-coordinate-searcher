@@ -1,6 +1,6 @@
 import { SelectedItem } from '../SelectedItem/types';
 
-interface HistoryItem extends SelectedItem {
+export interface HistoryItem extends SelectedItem {
   at: Date
   key: string
 }
