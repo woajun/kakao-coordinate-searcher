@@ -52,6 +52,7 @@ export default function History({ handleClick }: Props) {
               <HistoryItem
                 key={e.key}
                 item={e}
+                position={e.position}
                 onMouseOver={() => {
                   if (!moPlaceDispatch) return;
                   moPlaceDispatch({ type: 'set', payload: e });
