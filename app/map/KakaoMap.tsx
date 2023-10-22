@@ -5,7 +5,6 @@ import {
 } from 'react';
 import { createRoot } from 'react-dom/client';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
-import { usePlaceSearchList } from '../stores/PlaceSearchList/PlaceSearchListContext';
 import MouseOverOverlay from './MouseOverOverlay';
 import { useMouseOverPlace, useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import { useSelectedItem, useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
@@ -14,6 +13,7 @@ import { MarkerSvg } from '../svg';
 import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
 import { HistoryReducer } from '../stores/History/types';
 import { BoundReducer } from '../stores/Bound/types';
+import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
 
 function createMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -33,9 +33,10 @@ function createOverlay(
 type Props = {
   historyReducer: HistoryReducer
   boundReducer: BoundReducer
+  placeSearchListReducer: PlaceSearchListReducer
 };
 
-function KakaoMap({ historyReducer, boundReducer }: Props) {
+function KakaoMap({ historyReducer, boundReducer, placeSearchListReducer }: Props) {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
 
   // 선택된 장소 오버레이 생성
@@ -129,7 +130,7 @@ function KakaoMap({ historyReducer, boundReducer }: Props) {
 
   // 장소 검색 결과에 따라 지도에 마커 생성
   const [markers, setMarkers] = useState<kakao.maps.Marker[]>([]);
-  const pList = usePlaceSearchList();
+  const pList = placeSearchListReducer[0];
   useEffect(() => {
     if (map && pList && moPlaceDispathcer && sltItemDispatch) {
       markers.forEach((marker) => marker.setMap(null));

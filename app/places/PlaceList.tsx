@@ -4,10 +4,6 @@ import {
 } from 'react';
 import { useRouter } from 'next/navigation';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
-import {
-  usePlaceSearchList,
-  usePlaceSearchListDispatch,
-} from '../stores/PlaceSearchList/PlaceSearchListContext';
 import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import Pagination from '../common/Pagination';
 import TextHighligher from '../common/TextHighligher';
@@ -15,19 +11,20 @@ import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemCont
 import History from './History';
 import { HistoryReducer } from '../stores/History/types';
 import { BoundReducer } from '../stores/Bound/types';
+import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
 
 type Props = {
   historyReducer: HistoryReducer
   boundReducer: BoundReducer
+  placeSearchListReducer: PlaceSearchListReducer
 };
 
-export default function PlaceList({ historyReducer, boundReducer }: Props) {
+export default function PlaceList({ historyReducer, boundReducer, placeSearchListReducer }: Props) {
   const router = useRouter();
   const isLoaded = useIsLoadedMap();
   const [ps, setPs] = useState<kakao.maps.services.Places>();
   const [keyword, setKeyword] = useState('성수역');
-  const pList = usePlaceSearchList();
-  const pListDispatch = usePlaceSearchListDispatch();
+  const [pList, pListDispatch] = placeSearchListReducer;
   const moPlaceDispatch = useMouseOverPlaceDispatch();
   const sltItemDispatch = useSelectedItemDispatch();
   const boundsDispatch = boundReducer[1];
@@ -47,13 +44,7 @@ export default function PlaceList({ historyReducer, boundReducer }: Props) {
       switch (status) {
         case kakao.maps.services.Status.OK:
           setShowHistory(false);
-          pListDispatch({
-            type: 'set',
-            payload: {
-              data,
-              pagination,
-            },
-          });
+          pListDispatch.set(data, pagination);
           boundsDispatch.ready(data.map(
             ({ y, x }) => new kakao.maps.LatLng(Number(y), Number(x)),
           ));
@@ -63,13 +54,11 @@ export default function PlaceList({ historyReducer, boundReducer }: Props) {
           }
           break;
         default:
-          pListDispatch({
-            type: 'clear',
-          });
+          pListDispatch.clear();
           break;
       }
     });
-  }, [keyword, ps, pListDispatch]);
+  }, [ps]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
