@@ -1,12 +1,15 @@
 export type Bound = {
-  latlngs: kakao.maps.LatLng[]
+  bounds: kakao.maps.LatLngBounds | null
+  isTrigger: boolean
 };
 
-type ApplyAction = {
-  type: 'apply';
-  payload: {
-    latlngs: kakao.maps.LatLng[]
-  }
+type ReadyAction = {
+  type: 'ready';
+  latlngs: kakao.maps.LatLng[];
+};
+
+type TriggerAction = {
+  type: 'trigger';
 };
 
 type ClearAction = {
@@ -14,11 +17,13 @@ type ClearAction = {
 };
 
 export type BoundAction =
-  | ApplyAction
+  | ReadyAction
+  | TriggerAction
   | ClearAction;
 
 type BoundDispatcher = {
-  apply: (latlngs: kakao.maps.LatLng[]) => void;
+  ready: (latlngs: kakao.maps.LatLng[]) => void;
+  trigger: () => void;
   clear: () => void;
 };
 

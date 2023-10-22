@@ -163,13 +163,11 @@ function KakaoMap({ historyReducer, boundReducer }: Props) {
   // bound 변경시 지도 범위 재설정
   const [bound, boundDispatch] = boundReducer;
   useEffect(() => {
-    if (map && bound.latlngs.length > 0) {
-      const newBounds = new kakao.maps.LatLngBounds();
-      bound.latlngs.forEach((p) => newBounds.extend(p));
-      map.setBounds(newBounds);
+    if (map && bound.isTrigger && bound.bounds) {
+      map.setBounds(bound.bounds);
       boundDispatch.clear();
     }
-  }, [bound]);
+  }, [bound.isTrigger]);
 
   // 현재 위치로 이동 클릭
   const [currentOverlay, setCurrentOverlay] = useState<kakao.maps.CustomOverlay | null>(null);

@@ -3,14 +3,24 @@ import { Bound, BoundAction, BoundReducer } from './types';
 
 function boundReducer(_: Bound, action: BoundAction): Bound {
   switch (action.type) {
-    case 'apply': {
+    case 'ready': {
+      const bounds = new kakao.maps.LatLngBounds();
+      action.latlngs.forEach((p) => bounds.extend(p));
       return {
-        latlngs: action.payload.latlngs,
+        bounds,
+        isTrigger: false,
+      };
+    }
+    case 'trigger': {
+      return {
+        bounds: _.bounds,
+        isTrigger: true,
       };
     }
     case 'clear': {
       return {
-        latlngs: [],
+        bounds: null,
+        isTrigger: false,
       };
     }
     default: {
@@ -19,11 +29,17 @@ function boundReducer(_: Bound, action: BoundAction): Bound {
   }
 }
 
-export default function useBoundReducer(init: kakao.maps.LatLng[]): BoundReducer {
-  const [bound, dispatch] = useReducer(boundReducer, { latlngs: init });
+export default function useBoundReducer(): BoundReducer {
+  const [bound, dispatch] = useReducer(
+    boundReducer,
+    { bounds: null, isTrigger: false },
+  );
   return [bound, {
-    apply: (latlngs) => {
-      dispatch({ type: 'apply', payload: { latlngs } });
+    ready: (latlngs) => {
+      dispatch({ type: 'ready', latlngs });
+    },
+    trigger: () => {
+      dispatch({ type: 'trigger' });
     },
     clear: () => {
       dispatch({ type: 'clear' });

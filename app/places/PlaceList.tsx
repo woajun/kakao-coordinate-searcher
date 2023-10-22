@@ -37,14 +37,8 @@ export default function PlaceList({ historyReducer, boundReducer }: Props) {
     setPs(new kakao.maps.services.Places());
   }, [isLoaded]);
 
-  const positions = useRef<kakao.maps.LatLng[]>([]);
-  const changeMapBounds = () => {
-    boundsDispatch.apply(positions.current);
-  };
-
   // 이전 선택 기록 보기
   const [showHistory, setShowHistory] = useState(false);
-
   const changeable = useRef(true);
 
   useEffect(() => {
@@ -60,11 +54,11 @@ export default function PlaceList({ historyReducer, boundReducer }: Props) {
               pagination,
             },
           });
-          positions.current = data.map(
-            (e) => new kakao.maps.LatLng(Number(e.y), Number(e.x)),
-          );
+          boundsDispatch.ready(data.map(
+            ({ y, x }) => new kakao.maps.LatLng(Number(y), Number(x)),
+          ));
           if (changeable.current) {
-            changeMapBounds();
+            boundsDispatch.trigger();
             changeable.current = true;
           }
           break;
@@ -80,7 +74,7 @@ export default function PlaceList({ historyReducer, boundReducer }: Props) {
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     router.push('?drawer=false');
-    changeMapBounds();
+    boundsDispatch.trigger();
   };
 
   return (

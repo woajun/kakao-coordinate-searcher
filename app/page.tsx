@@ -19,7 +19,7 @@ type Props = {
 export default function Home({ searchParams }: Props) {
   const { drawer } = searchParams;
   const historyReducer = useHistoryReducer([]);
-  const boudReducer = useBoundReducer([]);
+  const boudReducer = useBoundReducer();
   return (
     <SnackbarProvider>
       <IsLoadedMapProvider>
