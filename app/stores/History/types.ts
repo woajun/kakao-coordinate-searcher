@@ -23,7 +23,7 @@ type RemoveAction = {
 
 export type HistoryAction = SetAction | ClearAction | RemoveAction;
 
-export type HistoryDispatcher = {
+type HistoryDispatcher = {
   add: (selectedItem: SelectedItem) => void;
   clear: () => void;
   remove: (key: string) => void;

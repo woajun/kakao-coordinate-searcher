@@ -12,15 +12,16 @@ import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPla
 import Pagination from '../common/Pagination';
 import TextHighligher from '../common/TextHighligher';
 import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
-import { useBoundsDispatch } from '../stores/Bounds/BoundsContext';
 import History from './History';
 import { HistoryReducer } from '../stores/History/types';
+import { BoundReducer } from '../stores/Bound/types';
 
 type Props = {
   historyReducer: HistoryReducer
+  boundReducer: BoundReducer
 };
 
-export default function PlaceList({ historyReducer }: Props) {
+export default function PlaceList({ historyReducer, boundReducer }: Props) {
   const router = useRouter();
   const isLoaded = useIsLoadedMap();
   const [ps, setPs] = useState<kakao.maps.services.Places>();
@@ -29,7 +30,7 @@ export default function PlaceList({ historyReducer }: Props) {
   const pListDispatch = usePlaceSearchListDispatch();
   const moPlaceDispatch = useMouseOverPlaceDispatch();
   const sltItemDispatch = useSelectedItemDispatch();
-  const boundsDispatch = useBoundsDispatch();
+  const boundsDispatch = boundReducer[1];
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -38,11 +39,7 @@ export default function PlaceList({ historyReducer }: Props) {
 
   const positions = useRef<kakao.maps.LatLng[]>([]);
   const changeMapBounds = () => {
-    if (!boundsDispatch) return;
-    boundsDispatch({
-      type: 'apply',
-      payload: { positions: positions.current },
-    });
+    boundsDispatch.apply(positions.current);
   };
 
   // 이전 선택 기록 보기

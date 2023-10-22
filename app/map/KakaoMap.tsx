@@ -10,10 +10,10 @@ import MouseOverOverlay from './MouseOverOverlay';
 import { useMouseOverPlace, useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import { useSelectedItem, useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 import SlectedItemOverlay from './SlectedItemOverlay';
-import { useBounds, useBoundsDispatch } from '../stores/Bounds/BoundsContext';
 import { MarkerSvg } from '../svg';
 import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
 import { HistoryReducer } from '../stores/History/types';
+import { BoundReducer } from '../stores/Bound/types';
 
 function createMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -32,9 +32,10 @@ function createOverlay(
 
 type Props = {
   historyReducer: HistoryReducer
+  boundReducer: BoundReducer
 };
 
-function KakaoMap({ historyReducer }: Props) {
+function KakaoMap({ historyReducer, boundReducer }: Props) {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
 
   // 선택된 장소 오버레이 생성
@@ -159,17 +160,16 @@ function KakaoMap({ historyReducer }: Props) {
     }
   }, [pList]);
 
-  // bounds 변경시 지도 범위 재설정
-  const bounds = useBounds();
-  const boundsDispatch = useBoundsDispatch();
+  // bound 변경시 지도 범위 재설정
+  const [bound, boundDispatch] = boundReducer;
   useEffect(() => {
-    if (map && boundsDispatch && bounds.positions.length > 0) {
+    if (map && bound.latlngs.length > 0) {
       const newBounds = new kakao.maps.LatLngBounds();
-      bounds.positions.forEach((p) => newBounds.extend(p));
+      bound.latlngs.forEach((p) => newBounds.extend(p));
       map.setBounds(newBounds);
-      boundsDispatch({ type: 'clear' });
+      boundDispatch.clear();
     }
-  }, [bounds]);
+  }, [bound]);
 
   // 현재 위치로 이동 클릭
   const [currentOverlay, setCurrentOverlay] = useState<kakao.maps.CustomOverlay | null>(null);

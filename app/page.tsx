@@ -8,9 +8,9 @@ import { IsLoadedMapProvider } from './stores/IsLoadedMap/IsLoadedMapContext';
 import { PlaceSearchListProvider } from './stores/PlaceSearchList/PlaceSearchListContext';
 import { MouseOverPlaceProvider } from './stores/MouseOverPlace/MouseOverPlaceContext';
 import { SelectedItemProvider } from './stores/SelectedItem/SelectedItemContext';
-import { BoundsProvider } from './stores/Bounds/BoundsContext';
 import { SnackbarProvider } from './stores/Snackbar/SnackbarContext';
 import useHistoryReducer from './stores/History/useHistoryReducer';
+import useBoundReducer from './stores/Bound/useBoundReducer';
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -19,23 +19,28 @@ type Props = {
 export default function Home({ searchParams }: Props) {
   const { drawer } = searchParams;
   const historyReducer = useHistoryReducer([]);
+  const boudReducer = useBoundReducer([]);
   return (
     <SnackbarProvider>
       <IsLoadedMapProvider>
         <PlaceSearchListProvider>
           <MouseOverPlaceProvider>
             <SelectedItemProvider>
-              <BoundsProvider>
-                <div className="flex flex-col w-screen h-screen">
-                  <Nav drawer={drawer === 'true'} />
-                  <div className="relative grow">
-                    <Drawer drawer={drawer === 'true'}>
-                      <PlaceList historyReducer={historyReducer} />
-                    </Drawer>
-                    <KakaoMap historyReducer={historyReducer} />
-                  </div>
+              <div className="flex flex-col w-screen h-screen">
+                <Nav drawer={drawer === 'true'} />
+                <div className="relative grow">
+                  <Drawer drawer={drawer === 'true'}>
+                    <PlaceList
+                      historyReducer={historyReducer}
+                      boundReducer={boudReducer}
+                    />
+                  </Drawer>
+                  <KakaoMap
+                    historyReducer={historyReducer}
+                    boundReducer={boudReducer}
+                  />
                 </div>
-              </BoundsProvider>
+              </div>
             </SelectedItemProvider>
           </MouseOverPlaceProvider>
         </PlaceSearchListProvider>

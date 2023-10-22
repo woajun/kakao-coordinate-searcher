@@ -15,7 +15,7 @@ type Props = {
 };
 
 export default function History({ handleClick, historyReducer }: Props) {
-  const [history, historyDispatch] = historyReducer;
+  const [history, historyDispatcher] = historyReducer;
   const router = useRouter();
   const sltItemDispatch = useSelectedItemDispatch();
   const moPlaceDispatch = useMouseOverPlaceDispatch();
@@ -34,7 +34,7 @@ export default function History({ handleClick, historyReducer }: Props) {
           type="button"
           className="px-2 text-xs text-white border rounded-md bg-slate-500 hover:bg-slate-400 active:bg-slate-500"
           onClick={() => {
-            historyDispatch.clear();
+            historyDispatcher.clear();
           }}
         >
           전체 삭제
@@ -73,9 +73,7 @@ export default function History({ handleClick, historyReducer }: Props) {
                     router.push('?drawer=false');
                   }
                 }}
-                onCloseClick={() => {
-                  historyDispatch.remove(e.key);
-                }}
+                onCloseClick={() => historyDispatcher.remove(e.key)}
               />
             ))
             .reverse()
