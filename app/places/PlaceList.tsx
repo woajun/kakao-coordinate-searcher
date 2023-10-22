@@ -14,8 +14,13 @@ import TextHighligher from '../common/TextHighligher';
 import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 import { useBoundsDispatch } from '../stores/Bounds/BoundsContext';
 import History from './History';
+import { HistoryReducer } from '../stores/History/types';
 
-export default function PlaceList() {
+type Props = {
+  historyReducer: HistoryReducer
+};
+
+export default function PlaceList({ historyReducer }: Props) {
   const router = useRouter();
   const isLoaded = useIsLoadedMap();
   const [ps, setPs] = useState<kakao.maps.services.Places>();
@@ -99,7 +104,7 @@ export default function PlaceList() {
         />
       </form>
       {showHistory ? (
-        <History handleClick={() => setShowHistory(false)} />
+        <History historyReducer={historyReducer} handleClick={() => setShowHistory(false)} />
       ) : (
         <>
           <div className="flex flex-col gap-1 p-2 overflow-y-scroll grow">

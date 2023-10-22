@@ -9,16 +9,24 @@ export type History = HistoryItem[];
 
 type SetAction = {
   type: 'add'
-  payload: SelectedItem
-};
-
-type ReplaceAction = {
-  type: 'replace'
-  payload: History
+  payload: { selectedItem: SelectedItem }
 };
 
 type ClearAction = {
   type: 'clear';
 };
 
-export type HistoryAction = SetAction | ReplaceAction | ClearAction;
+type RemoveAction = {
+  type: 'remove'
+  payload: { key: string }
+};
+
+export type HistoryAction = SetAction | ClearAction | RemoveAction;
+
+export type HistoryDispatcher = {
+  add: (selectedItem: SelectedItem) => void;
+  clear: () => void;
+  remove: (key: string) => void;
+};
+
+export type HistoryReducer = [History, HistoryDispatcher];

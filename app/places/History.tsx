@@ -1,25 +1,22 @@
 import { MouseEventHandler } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  useHistory,
-  useHistoryDispatch,
-} from '../stores/History/HistoryContext';
-import {
   LeftArrowSvg,
 } from '../svg';
 import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
 import HistoryItem from './HistoryItem';
+import { HistoryReducer } from '../stores/History/types';
 
 type Props = {
   handleClick: MouseEventHandler<HTMLButtonElement>;
+  historyReducer: HistoryReducer
 };
 
-export default function History({ handleClick }: Props) {
-  const history = useHistory();
+export default function History({ handleClick, historyReducer }: Props) {
+  const [history, historyDispatch] = historyReducer;
   const router = useRouter();
-  const historyDispatch = useHistoryDispatch();
   const sltItemDispatch = useSelectedItemDispatch();
   const moPlaceDispatch = useMouseOverPlaceDispatch();
   const setShowSnakbar = useSnackbar();
@@ -37,9 +34,7 @@ export default function History({ handleClick }: Props) {
           type="button"
           className="px-2 text-xs text-white border rounded-md bg-slate-500 hover:bg-slate-400 active:bg-slate-500"
           onClick={() => {
-            historyDispatch!({
-              type: 'clear',
-            });
+            historyDispatch.clear();
           }}
         >
           전체 삭제
@@ -79,14 +74,7 @@ export default function History({ handleClick }: Props) {
                   }
                 }}
                 onCloseClick={() => {
-                  if (historyDispatch) {
-                    historyDispatch({
-                      type: 'replace',
-                      payload: history.filter(
-                        (item) => item.key !== e.key,
-                      ),
-                    });
-                  }
+                  historyDispatch.remove(e.key);
                 }}
               />
             ))
