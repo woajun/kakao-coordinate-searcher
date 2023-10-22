@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
-  FormEventHandler, useEffect, useRef, useState,
+  FormEventHandler, useEffect, useState,
 } from 'react';
 import { useRouter } from 'next/navigation';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
@@ -36,10 +36,10 @@ export default function PlaceList({ historyReducer, boundReducer, placeSearchLis
 
   // 이전 선택 기록 보기
   const [showHistory, setShowHistory] = useState(false);
-  const changeable = useRef(true);
 
   useEffect(() => {
-    if (!ps || !pListDispatch) return;
+    if (!ps) return;
+    let isKeywordChange = true;
     ps.keywordSearch(keyword, (data, status, pagination) => {
       switch (status) {
         case kakao.maps.services.Status.OK:
@@ -48,17 +48,17 @@ export default function PlaceList({ historyReducer, boundReducer, placeSearchLis
           boundsDispatch.ready(data.map(
             ({ y, x }) => new kakao.maps.LatLng(Number(y), Number(x)),
           ));
-          if (changeable.current) {
+          if (!isKeywordChange) {
             boundsDispatch.trigger();
-            changeable.current = true;
           }
           break;
         default:
           pListDispatch.clear();
           break;
       }
+      isKeywordChange = false;
     });
-  }, [ps]);
+  }, [ps, keyword]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
@@ -74,13 +74,9 @@ export default function PlaceList({ historyReducer, boundReducer, placeSearchLis
           className="w-full px-2 py-2 border rounded-md"
           value={keyword}
           onChange={(e) => {
-            changeable.current = false;
             setKeyword(e.target.value);
           }}
           placeholder="검색어를 입력하세요."
-          onBlur={() => {
-            changeable.current = true;
-          }}
         />
       </form>
       {showHistory ? (
