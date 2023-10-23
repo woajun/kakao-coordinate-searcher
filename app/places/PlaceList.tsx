@@ -5,13 +5,13 @@ import {
 import { useRouter } from 'next/navigation';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import Pagination from '../common/Pagination';
-import TextHighligher from '../common/TextHighligher';
 import History from './History';
 import { HistoryReducer } from '../stores/History/types';
 import { BoundReducer } from '../stores/Bound/types';
 import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
 import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
+import PlaceListItem from './PlaceListItem';
 
 type Props = {
   historyReducer: HistoryReducer
@@ -111,42 +111,35 @@ export default function PlaceList({
             </div>
             {pList ? (
               pList.data.map((e) => (
-                <div
-                  role="button"
-                  tabIndex={0}
+                <PlaceListItem
                   key={e.id}
-                  onKeyDown={() => {}}
+                  title={e.place_name}
+                  keyword={keyword}
+                  position={new kakao.maps.LatLng(Number(e.y), Number(e.x))}
                   onClick={() => {
-                    const position = new kakao.maps.LatLng(
-                      Number(e.y),
-                      Number(e.x),
-                    );
                     sltItemDispatch.set({
                       title: e.place_name,
-                      position,
+                      position: new kakao.maps.LatLng(
+                        Number(e.y),
+                        Number(e.x),
+                      ),
                       panto: true,
                     });
                     router.push('?drawer=false');
                   }}
                   onMouseOver={() => {
-                    const position = new kakao.maps.LatLng(
-                      Number(e.y),
-                      Number(e.x),
-                    );
                     moPlaceDispatch.set({
                       title: e.place_name,
-                      position,
+                      position: new kakao.maps.LatLng(
+                        Number(e.y),
+                        Number(e.x),
+                      ),
                     });
-                  }}
-                  onFocus={() => {
-
                   }}
                   onMouseLeave={() => {
                     moPlaceDispatch.clear();
                   }}
-                >
-                  <TextHighligher keyword={keyword} text={e.place_name} />
-                </div>
+                />
               ))
             ) : (
               <span className="text-gray-600">검색결과가 없습니다</span>

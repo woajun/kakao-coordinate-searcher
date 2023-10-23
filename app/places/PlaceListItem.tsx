@@ -1,21 +1,24 @@
 import { MouseEventHandler } from 'react';
 import {
-  ClipboardSvg, MapSvg, XSvg,
+  ClipboardSvg, XSvg,
 } from '../svg';
 import BlueButton from '../common/BlueButton';
-import { HistoryItem } from '../stores/History/types';
+import TextHighligher from '../common/TextHighligher';
+import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
 
 type Props = {
-  item: HistoryItem;
+  title: string
   position: kakao.maps.LatLng
+  at?: Date
+  keyword?: string
   onMouseOver:MouseEventHandler<HTMLDivElement>
   onMouseLeave:MouseEventHandler<HTMLDivElement>
-  onCopyClick:MouseEventHandler<HTMLButtonElement>
-  onMapClick:MouseEventHandler<HTMLButtonElement>
-  onCloseClick:MouseEventHandler<HTMLButtonElement>
+  onCloseClick?:MouseEventHandler<HTMLButtonElement>
+  onClick:MouseEventHandler<HTMLDivElement>
 };
 
-function format(date: Date) {
+function format(date: Date | undefined) {
+  if (!date) return '';
   const start = new Date(date);
   const end = new Date();
 
@@ -40,48 +43,60 @@ function format(date: Date) {
 }
 
 export default function PlaceListItem({
-  item,
+  title,
+  position,
+  at,
+  keyword,
   onMouseOver,
   onMouseLeave,
-  onCopyClick,
-  onMapClick,
   onCloseClick,
+  onClick,
 }: Props) {
+  const setShowSnakbar = useSnackbar();
   return (
     <div
       className="flex justify-between p-1 rounded-md hover:bg-slate-100"
       onMouseOver={onMouseOver}
       onFocus={() => {}}
       onMouseLeave={onMouseLeave}
+      onClick={onClick}
     >
       <div>
-        <div className="text-sm font-semibold">{item.title}</div>
+        <div className="text-sm font-semibold">
+          {keyword ? <TextHighligher keyword={keyword} text={title} /> : title}
+        </div>
         <div className="text-xs">
           위도
-          {item.position.getLat()}
+          {position.getLat()}
         </div>
         <div className="text-xs">
           경도
-          {item.position.getLng()}
+          {position.getLng()}
         </div>
       </div>
       <div className="flex flex-col justify-between shrink-0">
         <p className="flex justify-end text-xs text-slate-600">
-          {format(item.at)}
+          {format(at)}
         </p>
         <div className="flex gap-1">
-          <BlueButton onClick={onCopyClick}>
+          <BlueButton onClick={async () => {
+            if (setShowSnakbar) {
+              setShowSnakbar(false);
+              const text = `{latitude:${position.getLat()},longitude:${position.getLng()}}`;
+              await navigator.clipboard.writeText(text);
+              setShowSnakbar(true);
+            }
+          }}
+          >
             <span className="sr-only">copy</span>
             <ClipboardSvg />
           </BlueButton>
-          <BlueButton onClick={onMapClick}>
-            <span className="sr-only">moveTo</span>
-            <MapSvg />
-          </BlueButton>
+          {onCloseClick && (
           <BlueButton onClick={onCloseClick}>
             <span className="sr-only">close</span>
             <XSvg />
           </BlueButton>
+          )}
         </div>
       </div>
     </div>

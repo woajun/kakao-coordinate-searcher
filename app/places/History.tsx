@@ -3,8 +3,7 @@ import { useRouter } from 'next/navigation';
 import {
   LeftArrowSvg,
 } from '../svg';
-import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
-import HistoryItem from './HistoryItem';
+import HistoryItem from './PlaceListItem';
 import { HistoryReducer } from '../stores/History/types';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
 import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
@@ -23,7 +22,6 @@ export default function History({
   const router = useRouter();
   const sltItemDispatch = selectedItemReducer[1];
   const moPlaceDispatch = mouseOverPlaceReducer[1];
-  const setShowSnakbar = useSnackbar();
   return (
     <div className="overflow-y-scroll grow">
       <div className="flex justify-between">
@@ -50,27 +48,22 @@ export default function History({
             .map((e) => (
               <HistoryItem
                 key={e.key}
-                item={e}
+                title={e.title}
                 position={e.position}
+                onClick={() => {
+                  sltItemDispatch.set({
+                    title: e.title,
+                    position: e.position,
+                    panto: true,
+                    noRecord: true,
+                  });
+                  router.push('?drawer=false');
+                }}
                 onMouseOver={() => {
                   moPlaceDispatch.set(e);
                 }}
                 onMouseLeave={() => {
                   moPlaceDispatch.clear();
-                }}
-                onCopyClick={async () => {
-                  if (setShowSnakbar) {
-                    setShowSnakbar(false);
-                    const text = `{latitude:${e.position.getLat()},longitude:${e.position.getLng()}}`;
-                    await navigator.clipboard.writeText(text);
-                    setShowSnakbar(true);
-                  }
-                }}
-                onMapClick={() => {
-                  sltItemDispatch.set({
-                    ...e, panto: true, noRecord: true,
-                  });
-                  router.push('?drawer=false');
                 }}
                 onCloseClick={() => historyDispatcher.remove(e.key)}
               />
