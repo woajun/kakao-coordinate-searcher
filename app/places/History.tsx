@@ -3,21 +3,22 @@ import { useRouter } from 'next/navigation';
 import {
   LeftArrowSvg,
 } from '../svg';
-import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
 import HistoryItem from './HistoryItem';
 import { HistoryReducer } from '../stores/History/types';
+import { SelectedItemReducer } from '../stores/SelectedItem/types';
 
 type Props = {
   handleClick: MouseEventHandler<HTMLButtonElement>;
   historyReducer: HistoryReducer
+  selectedItemReducer: SelectedItemReducer
 };
 
-export default function History({ handleClick, historyReducer }: Props) {
+export default function History({ handleClick, historyReducer, selectedItemReducer }: Props) {
   const [history, historyDispatcher] = historyReducer;
   const router = useRouter();
-  const sltItemDispatch = useSelectedItemDispatch();
+  const sltItemDispatch = selectedItemReducer[1];
   const moPlaceDispatch = useMouseOverPlaceDispatch();
   const setShowSnakbar = useSnackbar();
   return (
@@ -65,13 +66,10 @@ export default function History({ handleClick, historyReducer }: Props) {
                   }
                 }}
                 onMapClick={() => {
-                  if (sltItemDispatch) {
-                    sltItemDispatch!({
-                      type: 'set',
-                      payload: { ...e, panto: true, noRecord: true },
-                    });
-                    router.push('?drawer=false');
-                  }
+                  sltItemDispatch.set({
+                    ...e, panto: true, noRecord: true,
+                  });
+                  router.push('?drawer=false');
                 }}
                 onCloseClick={() => historyDispatcher.remove(e.key)}
               />

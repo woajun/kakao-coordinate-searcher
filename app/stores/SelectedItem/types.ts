@@ -15,3 +15,10 @@ type ClearAction = {
 };
 
 export type SelectedItemAction = SetAction | ClearAction;
+
+type SelectedItemDispatcher = {
+  set: (item: SelectedItem) => void
+  clear: () => void
+};
+
+export type SelectedItemReducer = [SelectedItem | null, SelectedItemDispatcher];

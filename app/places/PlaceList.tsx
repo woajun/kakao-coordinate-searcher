@@ -7,26 +7,29 @@ import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import Pagination from '../common/Pagination';
 import TextHighligher from '../common/TextHighligher';
-import { useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 import History from './History';
 import { HistoryReducer } from '../stores/History/types';
 import { BoundReducer } from '../stores/Bound/types';
 import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
+import { SelectedItemReducer } from '../stores/SelectedItem/types';
 
 type Props = {
   historyReducer: HistoryReducer
   boundReducer: BoundReducer
   placeSearchListReducer: PlaceSearchListReducer
+  selectedItemReducer: SelectedItemReducer
 };
 
-export default function PlaceList({ historyReducer, boundReducer, placeSearchListReducer }: Props) {
+export default function PlaceList({
+  historyReducer, boundReducer, placeSearchListReducer, selectedItemReducer,
+}: Props) {
   const router = useRouter();
   const isLoaded = useIsLoadedMap();
   const [ps, setPs] = useState<kakao.maps.services.Places>();
   const [keyword, setKeyword] = useState('성수역');
   const [pList, pListDispatch] = placeSearchListReducer;
   const moPlaceDispatch = useMouseOverPlaceDispatch();
-  const sltItemDispatch = useSelectedItemDispatch();
+  const sltItemDispatch = selectedItemReducer[1];
   const boundsDispatch = boundReducer[1];
 
   useEffect(() => {
@@ -80,7 +83,11 @@ export default function PlaceList({ historyReducer, boundReducer, placeSearchLis
         />
       </form>
       {showHistory ? (
-        <History historyReducer={historyReducer} handleClick={() => setShowHistory(false)} />
+        <History
+          historyReducer={historyReducer}
+          handleClick={() => setShowHistory(false)}
+          selectedItemReducer={selectedItemReducer}
+        />
       ) : (
         <>
           <div className="flex flex-col gap-1 p-2 overflow-y-scroll grow">
@@ -108,18 +115,14 @@ export default function PlaceList({ historyReducer, boundReducer, placeSearchLis
                   key={e.id}
                   onKeyDown={() => {}}
                   onClick={() => {
-                    if (!sltItemDispatch) return;
                     const position = new kakao.maps.LatLng(
                       Number(e.y),
                       Number(e.x),
                     );
-                    sltItemDispatch({
-                      type: 'set',
-                      payload: {
-                        title: e.place_name,
-                        position,
-                        panto: true,
-                      },
+                    sltItemDispatch.set({
+                      title: e.place_name,
+                      position,
+                      panto: true,
                     });
                     router.push('?drawer=false');
                   }}

@@ -7,13 +7,13 @@ import { createRoot } from 'react-dom/client';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import MouseOverOverlay from './MouseOverOverlay';
 import { useMouseOverPlace, useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
-import { useSelectedItem, useSelectedItemDispatch } from '../stores/SelectedItem/SelectedItemContext';
 import SlectedItemOverlay from './SlectedItemOverlay';
 import { MarkerSvg } from '../svg';
 import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
 import { HistoryReducer } from '../stores/History/types';
 import { BoundReducer } from '../stores/Bound/types';
 import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
+import { SelectedItemReducer } from '../stores/SelectedItem/types';
 
 function createMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -34,15 +34,17 @@ type Props = {
   historyReducer: HistoryReducer
   boundReducer: BoundReducer
   placeSearchListReducer: PlaceSearchListReducer
+  selectedItemReducer: SelectedItemReducer
 };
 
-function KakaoMap({ historyReducer, boundReducer, placeSearchListReducer }: Props) {
+function KakaoMap({
+  historyReducer, boundReducer, placeSearchListReducer, selectedItemReducer,
+}: Props) {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
 
   // 선택된 장소 오버레이 생성
   const [sltOverlay, setSltOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
-  const sltItem = useSelectedItem();
-  const sltItemDispatch = useSelectedItemDispatch();
+  const [sltItem, sltItemDispatch] = selectedItemReducer;
   const historyDispatch = historyReducer[1];
   const setShowSnakbar = useSnackbar();
   useEffect(() => {
@@ -84,11 +86,8 @@ function KakaoMap({ historyReducer, boundReducer, placeSearchListReducer }: Prop
 
       setMap(aMap);
       event.addListener(aMap, 'click', (e: KakaoMapClickEvent) => {
-        sltItemDispatch({
-          type: 'set',
-          payload: {
-            position: e.latLng, title: '클릭 위치',
-          },
+        sltItemDispatch.set({
+          position: e.latLng, title: '클릭 위치',
         });
       });
     }
@@ -114,12 +113,9 @@ function KakaoMap({ historyReducer, boundReducer, placeSearchListReducer }: Prop
             });
           }}
           handleClick={() => {
-            sltItemDispatch({
-              type: 'set',
-              payload: {
-                position: moPlace.position,
-                title: moPlace.title,
-              },
+            sltItemDispatch.set({
+              position: moPlace.position,
+              title: moPlace.title,
             });
           }}
         />,
@@ -147,12 +143,9 @@ function KakaoMap({ historyReducer, boundReducer, placeSearchListReducer }: Prop
           });
         });
         kakao.maps.event.addListener(marker, 'click', () => {
-          sltItemDispatch({
-            type: 'set',
-            payload: {
-              position,
-              title: e.place_name,
-            },
+          sltItemDispatch.set({
+            position,
+            title: e.place_name,
           });
         });
         return marker;
