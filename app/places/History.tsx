@@ -3,23 +3,26 @@ import { useRouter } from 'next/navigation';
 import {
   LeftArrowSvg,
 } from '../svg';
-import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
 import HistoryItem from './HistoryItem';
 import { HistoryReducer } from '../stores/History/types';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
+import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
 
 type Props = {
   handleClick: MouseEventHandler<HTMLButtonElement>;
   historyReducer: HistoryReducer
   selectedItemReducer: SelectedItemReducer
+  mouseOverPlaceReducer: MouseOverPlaceReducer
 };
 
-export default function History({ handleClick, historyReducer, selectedItemReducer }: Props) {
+export default function History({
+  handleClick, historyReducer, selectedItemReducer, mouseOverPlaceReducer,
+}: Props) {
   const [history, historyDispatcher] = historyReducer;
   const router = useRouter();
   const sltItemDispatch = selectedItemReducer[1];
-  const moPlaceDispatch = useMouseOverPlaceDispatch();
+  const moPlaceDispatch = mouseOverPlaceReducer[1];
   const setShowSnakbar = useSnackbar();
   return (
     <div className="overflow-y-scroll grow">
@@ -50,12 +53,10 @@ export default function History({ handleClick, historyReducer, selectedItemReduc
                 item={e}
                 position={e.position}
                 onMouseOver={() => {
-                  if (!moPlaceDispatch) return;
-                  moPlaceDispatch({ type: 'set', payload: e });
+                  moPlaceDispatch.set(e);
                 }}
                 onMouseLeave={() => {
-                  if (!moPlaceDispatch) return;
-                  moPlaceDispatch({ type: 'clear' });
+                  moPlaceDispatch.clear();
                 }}
                 onCopyClick={async () => {
                   if (setShowSnakbar) {

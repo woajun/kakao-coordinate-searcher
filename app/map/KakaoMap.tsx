@@ -6,7 +6,6 @@ import {
 import { createRoot } from 'react-dom/client';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import MouseOverOverlay from './MouseOverOverlay';
-import { useMouseOverPlace, useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import SlectedItemOverlay from './SlectedItemOverlay';
 import { MarkerSvg } from '../svg';
 import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
@@ -14,6 +13,7 @@ import { HistoryReducer } from '../stores/History/types';
 import { BoundReducer } from '../stores/Bound/types';
 import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
+import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
 
 function createMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -35,10 +35,11 @@ type Props = {
   boundReducer: BoundReducer
   placeSearchListReducer: PlaceSearchListReducer
   selectedItemReducer: SelectedItemReducer
+  mouseOverPlaceReducer: MouseOverPlaceReducer
 };
 
 function KakaoMap({
-  historyReducer, boundReducer, placeSearchListReducer, selectedItemReducer,
+  historyReducer, boundReducer, placeSearchListReducer, selectedItemReducer, mouseOverPlaceReducer,
 }: Props) {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
 
@@ -77,7 +78,7 @@ function KakaoMap({
   const isLoaded = useIsLoadedMap();
   const palette = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (isLoaded && palette.current && sltItemDispatch) {
+    if (isLoaded && palette.current) {
       const { Map, LatLng, event } = kakao.maps;
       const aMap = new Map(palette.current, {
         center: new LatLng(37.543341, 127.052727),
@@ -94,13 +95,13 @@ function KakaoMap({
   }, [isLoaded]);
 
   // 마우스가 오버레이된 장소에 따라 커스텀 오버레이 생성
-  const moPlaceDispathcer = useMouseOverPlaceDispatch();
-  const moPlace = useMouseOverPlace();
+  const [moPlace, moPlaceDispathcer] = mouseOverPlaceReducer;
+
   const [moOverlay, setMoOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   useEffect(() => {
     if (!map) return;
     moOverlay?.setMap(null);
-    if (moPlace && moPlaceDispathcer && sltItemDispatch) {
+    if (moPlace) {
       const newMouseOverOverlay = createOverlay(
         map,
         moPlace.position,
@@ -108,9 +109,7 @@ function KakaoMap({
           position={moPlace.position}
           title={moPlace.title}
           handleMouseLeave={() => {
-            moPlaceDispathcer({
-              type: 'clear',
-            });
+            moPlaceDispathcer.clear();
           }}
           handleClick={() => {
             sltItemDispatch.set({
@@ -128,18 +127,15 @@ function KakaoMap({
   const [markers, setMarkers] = useState<kakao.maps.Marker[]>([]);
   const pList = placeSearchListReducer[0];
   useEffect(() => {
-    if (map && pList && moPlaceDispathcer && sltItemDispatch) {
+    if (map && pList) {
       markers.forEach((marker) => marker.setMap(null));
       const aMarkers = pList.data.map((e) => {
         const position = new kakao.maps.LatLng(Number(e.y), Number(e.x));
         const marker = createMarker(map, position);
         kakao.maps.event.addListener(marker, 'mouseover', () => {
-          moPlaceDispathcer({
-            type: 'set',
-            payload: {
-              title: e.place_name,
-              position,
-            },
+          moPlaceDispathcer.set({
+            title: e.place_name,
+            position,
           });
         });
         kakao.maps.event.addListener(marker, 'click', () => {

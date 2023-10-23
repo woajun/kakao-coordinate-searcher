@@ -4,7 +4,6 @@ import {
 } from 'react';
 import { useRouter } from 'next/navigation';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
-import { useMouseOverPlaceDispatch } from '../stores/MouseOverPlace/MouseOverPlaceContext';
 import Pagination from '../common/Pagination';
 import TextHighligher from '../common/TextHighligher';
 import History from './History';
@@ -12,23 +11,25 @@ import { HistoryReducer } from '../stores/History/types';
 import { BoundReducer } from '../stores/Bound/types';
 import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
+import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
 
 type Props = {
   historyReducer: HistoryReducer
   boundReducer: BoundReducer
   placeSearchListReducer: PlaceSearchListReducer
   selectedItemReducer: SelectedItemReducer
+  mouseOverPlaceReducer: MouseOverPlaceReducer
 };
 
 export default function PlaceList({
-  historyReducer, boundReducer, placeSearchListReducer, selectedItemReducer,
+  historyReducer, boundReducer, placeSearchListReducer, selectedItemReducer, mouseOverPlaceReducer,
 }: Props) {
   const router = useRouter();
   const isLoaded = useIsLoadedMap();
   const [ps, setPs] = useState<kakao.maps.services.Places>();
   const [keyword, setKeyword] = useState('성수역');
   const [pList, pListDispatch] = placeSearchListReducer;
-  const moPlaceDispatch = useMouseOverPlaceDispatch();
+  const moPlaceDispatch = mouseOverPlaceReducer[1];
   const sltItemDispatch = selectedItemReducer[1];
   const boundsDispatch = boundReducer[1];
 
@@ -87,6 +88,7 @@ export default function PlaceList({
           historyReducer={historyReducer}
           handleClick={() => setShowHistory(false)}
           selectedItemReducer={selectedItemReducer}
+          mouseOverPlaceReducer={mouseOverPlaceReducer}
         />
       ) : (
         <>
@@ -127,25 +129,20 @@ export default function PlaceList({
                     router.push('?drawer=false');
                   }}
                   onMouseOver={() => {
-                    if (!moPlaceDispatch) return;
                     const position = new kakao.maps.LatLng(
                       Number(e.y),
                       Number(e.x),
                     );
-                    moPlaceDispatch({
-                      type: 'set',
-                      payload: {
-                        title: e.place_name,
-                        position,
-                      },
+                    moPlaceDispatch.set({
+                      title: e.place_name,
+                      position,
                     });
                   }}
                   onFocus={() => {
 
                   }}
                   onMouseLeave={() => {
-                    if (!moPlaceDispatch) return;
-                    moPlaceDispatch({ type: 'clear' });
+                    moPlaceDispatch.clear();
                   }}
                 >
                   <TextHighligher keyword={keyword} text={e.place_name} />

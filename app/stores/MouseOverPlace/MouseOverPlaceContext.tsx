@@ -1,26 +1,10 @@
-import {
-  Dispatch,
-  ReactNode,
-  createContext,
-  useContext,
-  useReducer,
-} from 'react';
-import { MouseOverPlaceAction } from './types';
-import { SelectedItem } from '../SelectedItem/types';
+import { useReducer } from 'react';
+import { MouseOverPlace, MouseOverPlaceAction, MouseOverPlaceReducer } from './types';
 
-const MouseOverPlaceContext = createContext<
-SelectedItem | null>(null);
-
-const MouseOverPlaceDispatchContext = createContext<Dispatch<MouseOverPlaceAction> | null>(null);
-
-type Props = {
-  children: ReactNode;
-};
-
-function MouseOverPlaceReducer(
-  _: SelectedItem | null,
+function mouseOverPlaceReducer(
+  _: MouseOverPlace | null,
   action: MouseOverPlaceAction,
-): SelectedItem | null {
+): MouseOverPlace | null {
   switch (action.type) {
     case 'set': {
       return action.payload;
@@ -34,18 +18,15 @@ function MouseOverPlaceReducer(
   }
 }
 
-export function MouseOverPlaceProvider({ children }: Props) {
-  const [place, dispatch] = useReducer(MouseOverPlaceReducer, null);
-
-  return (
-    <MouseOverPlaceContext.Provider value={place}>
-      <MouseOverPlaceDispatchContext.Provider value={dispatch}>
-        {children}
-      </MouseOverPlaceDispatchContext.Provider>
-    </MouseOverPlaceContext.Provider>
-  );
+export default function useMouseOverPlaceReducer(): MouseOverPlaceReducer {
+  const [mouseOverPlace, dispatch] = useReducer(mouseOverPlaceReducer, null);
+  const mouseOverPlaceDispatcher = {
+    set: (item: MouseOverPlace) => {
+      dispatch({ type: 'set', payload: item });
+    },
+    clear: () => {
+      dispatch({ type: 'clear' });
+    },
+  };
+  return [mouseOverPlace, mouseOverPlaceDispatcher];
 }
-
-export const useMouseOverPlace = () => useContext(MouseOverPlaceContext);
-
-export const useMouseOverPlaceDispatch = () => useContext(MouseOverPlaceDispatchContext);
