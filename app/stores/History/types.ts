@@ -7,26 +7,9 @@ export interface HistoryItem extends SelectedItem {
 
 export type History = HistoryItem[];
 
-type SetAction = {
-  type: 'add'
-  payload: { selectedItem: SelectedItem }
-};
-
-type ClearAction = {
-  type: 'clear';
-};
-
-type RemoveAction = {
-  type: 'remove'
-  payload: { key: string }
-};
-
-export type HistoryAction = SetAction | ClearAction | RemoveAction;
-
-type HistoryDispatcher = {
+export type HistoryActions = {
+  get: () => History;
   add: (selectedItem: SelectedItem) => void;
   clear: () => void;
   remove: (key: string) => void;
 };
-
-export type HistoryReducer = [History, HistoryDispatcher];

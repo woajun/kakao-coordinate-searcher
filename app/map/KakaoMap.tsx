@@ -9,11 +9,11 @@ import MouseOverOverlay from './MouseOverOverlay';
 import SlectedItemOverlay from './SlectedItemOverlay';
 import { MarkerSvg } from '../svg';
 import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
-import { HistoryReducer } from '../stores/History/types';
 import { BoundReducer } from '../stores/Bound/types';
 import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
 import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
+import { HistoryActions } from '../stores/History/types';
 
 function createMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -31,7 +31,7 @@ function createOverlay(
 }
 
 type Props = {
-  historyReducer: HistoryReducer
+  historyActions: HistoryActions
   boundReducer: BoundReducer
   placeSearchListReducer: PlaceSearchListReducer
   selectedItemReducer: SelectedItemReducer
@@ -39,14 +39,13 @@ type Props = {
 };
 
 function KakaoMap({
-  historyReducer, boundReducer, placeSearchListReducer, selectedItemReducer, mouseOverPlaceReducer,
+  historyActions, boundReducer, placeSearchListReducer, selectedItemReducer, mouseOverPlaceReducer,
 }: Props) {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
 
   // 선택된 장소 오버레이 생성
   const [sltOverlay, setSltOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   const [sltItem, sltItemDispatch] = selectedItemReducer;
-  const historyDispatch = historyReducer[1];
   const setShowSnakbar = useSnackbar();
   useEffect(() => {
     sltOverlay?.setMap(null);
@@ -69,8 +68,8 @@ function KakaoMap({
     if (sltItem.panto) {
       map.panTo(sltItem.position);
     }
-    if (historyDispatch && !sltItem.noRecord) {
-      historyDispatch.add(sltItem);
+    if (!sltItem.noRecord) {
+      historyActions.add(sltItem);
     }
   }, [sltItem]);
 

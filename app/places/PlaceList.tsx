@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import Pagination from '../common/Pagination';
 import History from './History';
-import { HistoryReducer } from '../stores/History/types';
+import { HistoryActions } from '../stores/History/types';
 import { BoundReducer } from '../stores/Bound/types';
 import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
@@ -14,7 +14,7 @@ import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
 import PlaceListItem from './PlaceListItem';
 
 type Props = {
-  historyReducer: HistoryReducer
+  historyActions: HistoryActions
   boundReducer: BoundReducer
   placeSearchListReducer: PlaceSearchListReducer
   selectedItemReducer: SelectedItemReducer
@@ -22,7 +22,7 @@ type Props = {
 };
 
 export default function PlaceList({
-  historyReducer, boundReducer, placeSearchListReducer, selectedItemReducer, mouseOverPlaceReducer,
+  historyActions, boundReducer, placeSearchListReducer, selectedItemReducer, mouseOverPlaceReducer,
 }: Props) {
   const router = useRouter();
   const isLoaded = useIsLoadedMap();
@@ -85,7 +85,7 @@ export default function PlaceList({
       </form>
       {showHistory ? (
         <History
-          historyReducer={historyReducer}
+          historyActions={historyActions}
           handleClick={() => setShowHistory(false)}
           selectedItemReducer={selectedItemReducer}
           mouseOverPlaceReducer={mouseOverPlaceReducer}

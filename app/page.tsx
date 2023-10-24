@@ -6,11 +6,11 @@ import Drawer from './layout/Drawer';
 import PlaceList from './places/PlaceList';
 import { IsLoadedMapProvider } from './stores/IsLoadedMap/IsLoadedMapContext';
 import { SnackbarProvider } from './stores/Snackbar/SnackbarContext';
-import useHistoryReducer from './stores/History/useHistoryReducer';
 import useBoundReducer from './stores/Bound/useBoundReducer';
 import usePlaceSearchListReducer from './stores/PlaceSearchList/usePlaceSearchListReducer';
 import useSelectedItemReducer from './stores/SelectedItem/useSelectedItemReducer';
 import useMouseOverPlaceReducer from './stores/MouseOverPlace/MouseOverPlaceContext';
+import useHistoryActions from './stores/History/useHistoryActions';
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -18,7 +18,7 @@ type Props = {
 
 export default function Home({ searchParams }: Props) {
   const { drawer } = searchParams;
-  const historyReducer = useHistoryReducer([]);
+  const historyActions = useHistoryActions();
   const boudReducer = useBoundReducer();
   const placeSearchListReducer = usePlaceSearchListReducer();
   const selectedItemReducer = useSelectedItemReducer();
@@ -31,7 +31,7 @@ export default function Home({ searchParams }: Props) {
           <div className="relative grow">
             <Drawer drawer={drawer === 'true'}>
               <PlaceList
-                historyReducer={historyReducer}
+                historyActions={historyActions}
                 boundReducer={boudReducer}
                 placeSearchListReducer={placeSearchListReducer}
                 selectedItemReducer={selectedItemReducer}
@@ -39,7 +39,7 @@ export default function Home({ searchParams }: Props) {
               />
             </Drawer>
             <KakaoMap
-              historyReducer={historyReducer}
+              historyActions={historyActions}
               boundReducer={boudReducer}
               placeSearchListReducer={placeSearchListReducer}
               selectedItemReducer={selectedItemReducer}
