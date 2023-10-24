@@ -92,7 +92,7 @@ export default function PlaceList({
         />
       ) : (
         <>
-          <div className="flex flex-col gap-1 p-2 overflow-y-scroll grow">
+          <div className="flex flex-col gap-1 p-2 overflow-y-auto grow">
             <div className="flex justify-between">
               <button
                 type="button"

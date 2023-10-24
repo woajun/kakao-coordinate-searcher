@@ -23,7 +23,7 @@ export default function History({
   const sltItemDispatch = selectedItemReducer[1];
   const moPlaceDispatch = mouseOverPlaceReducer[1];
   return (
-    <div className="overflow-y-scroll grow">
+    <div className="overflow-y-auto grow">
       <div className="flex justify-between">
         <button
           type="button"
