@@ -1,48 +1,30 @@
-import { useReducer } from 'react';
-import { Bound, BoundAction, BoundReducer } from './types';
-
-function boundReducer(_: Bound, action: BoundAction): Bound {
-  switch (action.type) {
-    case 'ready': {
-      const bounds = new kakao.maps.LatLngBounds();
-      action.latlngs.forEach((p) => bounds.extend(p));
-      return {
-        bounds,
-        isTrigger: false,
-      };
-    }
-    case 'trigger': {
-      return {
-        bounds: _.bounds,
-        isTrigger: true,
-      };
-    }
-    case 'clear': {
-      return {
-        bounds: null,
-        isTrigger: false,
-      };
-    }
-    default: {
-      throw Error('Unknown action');
-    }
-  }
-}
+import { useState } from 'react';
+import { Bound, BoundReducer } from './types';
 
 export default function useBoundReducer(): BoundReducer {
-  const [bound, dispatch] = useReducer(
-    boundReducer,
+  const [bound, setBound] = useState<Bound>(
     { bounds: null, isTrigger: false },
   );
   return [bound, {
     ready: (latlngs) => {
-      dispatch({ type: 'ready', latlngs });
+      const bounds = new kakao.maps.LatLngBounds();
+      latlngs.forEach((p) => bounds.extend(p));
+      setBound({
+        bounds,
+        isTrigger: false,
+      });
     },
     trigger: () => {
-      dispatch({ type: 'trigger' });
+      setBound((_) => ({
+        bounds: _.bounds,
+        isTrigger: true,
+      }));
     },
     clear: () => {
-      dispatch({ type: 'clear' });
+      setBound({
+        bounds: null,
+        isTrigger: false,
+      });
     },
   }];
 }
