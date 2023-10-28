@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { SelectedItem } from '../SelectedItem/types';
-import type { History, HistoryActions } from './types';
+import { SelectedItem } from '@/app/stores/SelectedItem/types';
+import { History, HistoryActions } from './types';
 
 export default function useHistoryActions(): HistoryActions {
   const [history, setHistory] = useState<History>([]);

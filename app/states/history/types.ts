@@ -1,4 +1,4 @@
-import { SelectedItem } from '../SelectedItem/types';
+import { SelectedItem } from '@/app/stores/SelectedItem/types';
 
 export interface HistoryItem extends SelectedItem {
   at: Date

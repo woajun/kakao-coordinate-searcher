@@ -10,7 +10,7 @@ import useBoundReducer from './stores/Bound/useBoundReducer';
 import usePlaceSearchListReducer from './stores/PlaceSearchList/usePlaceSearchListReducer';
 import useSelectedItemReducer from './stores/SelectedItem/useSelectedItemReducer';
 import useMouseOverPlaceReducer from './stores/MouseOverPlace/MouseOverPlaceContext';
-import useHistoryActions from './stores/History/useHistoryActions';
+import useHistoryActions from './states/history';
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
