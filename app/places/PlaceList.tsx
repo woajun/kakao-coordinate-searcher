@@ -45,19 +45,23 @@ export default function PlaceList({
     let isKeywordChange = true;
     ps.keywordSearch(keyword, (data, status, pagination) => {
       switch (status) {
-        case kakao.maps.services.Status.OK:
+        case kakao.maps.services.Status.OK: {
           setShowHistory(false);
           pListDispatch.set(data, pagination);
-          bound.ready(data.map(
+          const latlngs = data.map(
             ({ y, x }) => new kakao.maps.LatLng(Number(y), Number(x)),
-          ));
+          );
           if (!isKeywordChange) {
-            bound.trigger();
+            bound.apply(latlngs);
+          } else {
+            bound.setLatLngs(latlngs);
           }
           break;
-        default:
+        }
+        default: {
           pListDispatch.clear();
           break;
+        }
       }
       isKeywordChange = false;
     });
@@ -66,7 +70,7 @@ export default function PlaceList({
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     router.push('?drawer=false');
-    bound.trigger();
+    bound.apply();
   };
 
   return (

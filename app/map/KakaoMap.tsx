@@ -85,6 +85,7 @@ function KakaoMap({
       });
 
       setMap(aMap);
+      bound.setMap(aMap);
       event.addListener(aMap, 'click', (e: KakaoMapClickEvent) => {
         sltItemDispatch.set({
           position: e.latLng, title: '클릭 위치',
@@ -148,11 +149,6 @@ function KakaoMap({
       setMarkers(aMarkers);
     }
   }, [pList]);
-
-  // bound 변경시 지도 범위 재설정
-  useEffect(() => {
-    bound.apply(map);
-  }, [bound.get()]);
 
   // 현재 위치로 이동 클릭
   const [currentOverlay, setCurrentOverlay] = useState<kakao.maps.CustomOverlay | null>(null);

@@ -1,43 +1,41 @@
 import { useState } from 'react';
 
 export type Bound = {
-  bounds: kakao.maps.LatLngBounds | null
-  isTrigger: boolean
+  latlngs: kakao.maps.LatLng[] | null
+  map: kakao.maps.Map | null
 };
 
 export type BoundState = {
-  get: () => Bound;
-  ready: (latlngs: kakao.maps.LatLng[]) => void;
-  trigger: () => void;
-  apply: (map: kakao.maps.Map | null) => void;
+  setLatLngs: (latlngs: kakao.maps.LatLng[]) => void;
+  setMap: (map: kakao.maps.Map) => void;
+  apply: (latlngs?: kakao.maps.LatLng[] | null) => void;
 };
 
 export default function useBoundState(): BoundState {
   const [bound, setBound] = useState<Bound>(
-    { bounds: null, isTrigger: false },
+    { latlngs: null, map: null },
   );
   return {
-    get: () => bound,
-    ready: (latlngs) => {
-      const bounds = new kakao.maps.LatLngBounds();
-      latlngs.forEach((p) => bounds.extend(p));
+    setLatLngs: (latlngs) => {
       setBound({
-        bounds,
-        isTrigger: false,
+        ...bound,
+        latlngs,
       });
     },
-    trigger: () => {
-      setBound((_) => ({
-        bounds: _.bounds,
-        isTrigger: true,
-      }));
+    setMap: (map) => {
+      setBound({
+        ...bound,
+        map,
+      });
     },
-    apply: (map) => {
-      if (map && bound.bounds && bound.isTrigger) {
-        map.setBounds(bound.bounds);
+    apply: (latlngs = bound.latlngs) => {
+      if (bound.map && latlngs) {
+        const bounds = new kakao.maps.LatLngBounds();
+        latlngs.forEach((p) => bounds.extend(p));
+        bound.map.setBounds(bounds);
         setBound({
-          bounds: null,
-          isTrigger: false,
+          ...bound,
+          latlngs: null,
         });
       }
     },
