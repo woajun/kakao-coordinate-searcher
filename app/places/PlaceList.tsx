@@ -6,23 +6,23 @@ import { useRouter } from 'next/navigation';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import Pagination from '../common/Pagination';
 import History from './History';
-import { BoundReducer } from '../states/bound/types';
 import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
 import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
 import PlaceListItem from './PlaceListItem';
-import { HistoryActions } from '../states/history/types';
+import { HistoryState } from '../states/useHistoryState';
+import { BoundState } from '../states/useBoundState';
 
 type Props = {
-  historyActions: HistoryActions
-  boundReducer: BoundReducer
+  history: HistoryState
+  bound: BoundState
   placeSearchListReducer: PlaceSearchListReducer
   selectedItemReducer: SelectedItemReducer
   mouseOverPlaceReducer: MouseOverPlaceReducer
 };
 
 export default function PlaceList({
-  historyActions, boundReducer, placeSearchListReducer, selectedItemReducer, mouseOverPlaceReducer,
+  history, bound, placeSearchListReducer, selectedItemReducer, mouseOverPlaceReducer,
 }: Props) {
   const router = useRouter();
   const isLoaded = useIsLoadedMap();
@@ -48,11 +48,11 @@ export default function PlaceList({
         case kakao.maps.services.Status.OK:
           setShowHistory(false);
           pListDispatch.set(data, pagination);
-          boundReducer.ready(data.map(
+          bound.ready(data.map(
             ({ y, x }) => new kakao.maps.LatLng(Number(y), Number(x)),
           ));
           if (!isKeywordChange) {
-            boundReducer.trigger();
+            bound.trigger();
           }
           break;
         default:
@@ -66,7 +66,7 @@ export default function PlaceList({
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     router.push('?drawer=false');
-    boundReducer.trigger();
+    bound.trigger();
   };
 
   return (
@@ -84,7 +84,7 @@ export default function PlaceList({
       </form>
       {showHistory ? (
         <History
-          historyActions={historyActions}
+          history={history}
           handleClick={() => setShowHistory(false)}
           selectedItemReducer={selectedItemReducer}
           mouseOverPlaceReducer={mouseOverPlaceReducer}

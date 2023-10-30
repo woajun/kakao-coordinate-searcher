@@ -9,11 +9,11 @@ import MouseOverOverlay from './MouseOverOverlay';
 import SlectedItemOverlay from './SlectedItemOverlay';
 import { MarkerSvg } from '../svg';
 import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
-import { BoundReducer } from '../states/bound/types';
 import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
 import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
-import { HistoryActions } from '../states/history/types';
+import { BoundState } from '../states/useBoundState';
+import { HistoryState } from '../states/useHistoryState';
 
 function createMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -31,15 +31,15 @@ function createOverlay(
 }
 
 type Props = {
-  historyActions: HistoryActions
-  boundReducer: BoundReducer
+  history: HistoryState
+  bound: BoundState
   placeSearchListReducer: PlaceSearchListReducer
   selectedItemReducer: SelectedItemReducer
   mouseOverPlaceReducer: MouseOverPlaceReducer
 };
 
 function KakaoMap({
-  historyActions, boundReducer, placeSearchListReducer, selectedItemReducer, mouseOverPlaceReducer,
+  history, bound, placeSearchListReducer, selectedItemReducer, mouseOverPlaceReducer,
 }: Props) {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
 
@@ -69,7 +69,7 @@ function KakaoMap({
       map.panTo(sltItem.position);
     }
     if (!sltItem.noRecord) {
-      historyActions.add(sltItem);
+      history.add(sltItem);
     }
   }, [sltItem]);
 
@@ -150,13 +150,9 @@ function KakaoMap({
   }, [pList]);
 
   // bound 변경시 지도 범위 재설정
-  const bound = boundReducer.get();
   useEffect(() => {
-    if (map && bound.isTrigger && bound.bounds) {
-      map.setBounds(bound.bounds);
-      boundReducer.clear();
-    }
-  }, [bound.isTrigger]);
+    bound.apply(map);
+  }, [bound.get()]);
 
   // 현재 위치로 이동 클릭
   const [currentOverlay, setCurrentOverlay] = useState<kakao.maps.CustomOverlay | null>(null);

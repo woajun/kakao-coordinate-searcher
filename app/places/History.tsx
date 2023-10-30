@@ -6,22 +6,22 @@ import {
 import HistoryItem from './PlaceListItem';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
 import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
-import { HistoryActions } from '../states/history/types';
+import { HistoryState } from '../states/useHistoryState';
 
 type Props = {
   handleClick: MouseEventHandler<HTMLButtonElement>;
-  historyActions: HistoryActions
+  history: HistoryState
   selectedItemReducer: SelectedItemReducer
   mouseOverPlaceReducer: MouseOverPlaceReducer
 };
 
 export default function History({
-  handleClick, historyActions, selectedItemReducer, mouseOverPlaceReducer,
+  handleClick, history, selectedItemReducer, mouseOverPlaceReducer,
 }: Props) {
   const router = useRouter();
   const sltItemDispatch = selectedItemReducer[1];
   const moPlaceDispatch = mouseOverPlaceReducer[1];
-  const histories = historyActions.get();
+  const histories = history.get();
   return (
     <div className="overflow-y-auto grow">
       <div className="flex justify-between">
@@ -36,7 +36,7 @@ export default function History({
           type="button"
           className="px-2 text-xs text-white border rounded-md bg-slate-500 hover:bg-slate-400 active:bg-slate-500"
           onClick={() => {
-            historyActions.clear();
+            history.clear();
           }}
         >
           전체 삭제
@@ -65,7 +65,7 @@ export default function History({
                 onMouseLeave={() => {
                   moPlaceDispatch.clear();
                 }}
-                onCloseClick={() => historyActions.remove(e.key)}
+                onCloseClick={() => history.remove(e.key)}
               />
             ))
             .reverse()

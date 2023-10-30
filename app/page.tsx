@@ -9,8 +9,8 @@ import { SnackbarProvider } from './stores/Snackbar/SnackbarContext';
 import usePlaceSearchListReducer from './stores/PlaceSearchList/usePlaceSearchListReducer';
 import useSelectedItemReducer from './stores/SelectedItem/useSelectedItemReducer';
 import useMouseOverPlaceReducer from './stores/MouseOverPlace/MouseOverPlaceContext';
-import useHistoryActions from './states/history';
-import useBoundReducer from './states/bound/useBoundReducer';
+import useHistoryState from './states/useHistoryState';
+import useBoundState from './states/useBoundState';
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -18,8 +18,8 @@ type Props = {
 
 export default function Home({ searchParams }: Props) {
   const { drawer } = searchParams;
-  const historyActions = useHistoryActions();
-  const boudReducer = useBoundReducer();
+  const history = useHistoryState();
+  const bound = useBoundState();
   const placeSearchListReducer = usePlaceSearchListReducer();
   const selectedItemReducer = useSelectedItemReducer();
   const mouseOverPlaceReducer = useMouseOverPlaceReducer();
@@ -31,16 +31,16 @@ export default function Home({ searchParams }: Props) {
           <div className="relative grow">
             <Drawer drawer={drawer === 'true'}>
               <PlaceList
-                historyActions={historyActions}
-                boundReducer={boudReducer}
+                history={history}
+                bound={bound}
                 placeSearchListReducer={placeSearchListReducer}
                 selectedItemReducer={selectedItemReducer}
                 mouseOverPlaceReducer={mouseOverPlaceReducer}
               />
             </Drawer>
             <KakaoMap
-              historyActions={historyActions}
-              boundReducer={boudReducer}
+              history={history}
+              bound={bound}
               placeSearchListReducer={placeSearchListReducer}
               selectedItemReducer={selectedItemReducer}
               mouseOverPlaceReducer={mouseOverPlaceReducer}
