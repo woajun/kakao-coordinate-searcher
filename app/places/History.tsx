@@ -4,9 +4,9 @@ import {
   LeftArrowSvg,
 } from '../svg';
 import HistoryItem from './PlaceListItem';
-import { HistoryActions } from '../stores/History/types';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
 import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
+import { HistoryActions } from '../states/history/types';
 
 type Props = {
   handleClick: MouseEventHandler<HTMLButtonElement>;

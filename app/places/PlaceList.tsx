@@ -6,12 +6,12 @@ import { useRouter } from 'next/navigation';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import Pagination from '../common/Pagination';
 import History from './History';
-import { HistoryActions } from '../stores/History/types';
-import { BoundReducer } from '../stores/Bound/types';
+import { BoundReducer } from '../states/bound/types';
 import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
 import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
 import PlaceListItem from './PlaceListItem';
+import { HistoryActions } from '../states/history/types';
 
 type Props = {
   historyActions: HistoryActions
@@ -31,7 +31,6 @@ export default function PlaceList({
   const [pList, pListDispatch] = placeSearchListReducer;
   const moPlaceDispatch = mouseOverPlaceReducer[1];
   const sltItemDispatch = selectedItemReducer[1];
-  const boundsDispatch = boundReducer[1];
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -49,11 +48,11 @@ export default function PlaceList({
         case kakao.maps.services.Status.OK:
           setShowHistory(false);
           pListDispatch.set(data, pagination);
-          boundsDispatch.ready(data.map(
+          boundReducer.ready(data.map(
             ({ y, x }) => new kakao.maps.LatLng(Number(y), Number(x)),
           ));
           if (!isKeywordChange) {
-            boundsDispatch.trigger();
+            boundReducer.trigger();
           }
           break;
         default:
@@ -67,7 +66,7 @@ export default function PlaceList({
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     router.push('?drawer=false');
-    boundsDispatch.trigger();
+    boundReducer.trigger();
   };
 
   return (

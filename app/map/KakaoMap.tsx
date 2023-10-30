@@ -9,11 +9,11 @@ import MouseOverOverlay from './MouseOverOverlay';
 import SlectedItemOverlay from './SlectedItemOverlay';
 import { MarkerSvg } from '../svg';
 import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
-import { BoundReducer } from '../stores/Bound/types';
+import { BoundReducer } from '../states/bound/types';
 import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
 import { SelectedItemReducer } from '../stores/SelectedItem/types';
 import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
-import { HistoryActions } from '../stores/History/types';
+import { HistoryActions } from '../states/history/types';
 
 function createMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -150,11 +150,11 @@ function KakaoMap({
   }, [pList]);
 
   // bound 변경시 지도 범위 재설정
-  const [bound, boundDispatch] = boundReducer;
+  const bound = boundReducer.get();
   useEffect(() => {
     if (map && bound.isTrigger && bound.bounds) {
       map.setBounds(bound.bounds);
-      boundDispatch.clear();
+      boundReducer.clear();
     }
   }, [bound.isTrigger]);
 

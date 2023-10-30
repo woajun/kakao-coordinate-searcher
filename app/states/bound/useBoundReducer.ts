@@ -5,7 +5,8 @@ export default function useBoundReducer(): BoundReducer {
   const [bound, setBound] = useState<Bound>(
     { bounds: null, isTrigger: false },
   );
-  return [bound, {
+  return {
+    get: () => bound,
     ready: (latlngs) => {
       const bounds = new kakao.maps.LatLngBounds();
       latlngs.forEach((p) => bounds.extend(p));
@@ -26,5 +27,5 @@ export default function useBoundReducer(): BoundReducer {
         isTrigger: false,
       });
     },
-  }];
+  };
 }

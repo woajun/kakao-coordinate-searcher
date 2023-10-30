@@ -3,10 +3,9 @@ export type Bound = {
   isTrigger: boolean
 };
 
-type BoundDispatcher = {
+export type BoundReducer = {
+  get: () => Bound;
   ready: (latlngs: kakao.maps.LatLng[]) => void;
   trigger: () => void;
   clear: () => void;
 };
-
-export type BoundReducer = [Bound, BoundDispatcher];
