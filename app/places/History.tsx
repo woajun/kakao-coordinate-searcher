@@ -4,23 +4,21 @@ import {
   LeftArrowSvg,
 } from '../svg';
 import HistoryItem from './PlaceListItem';
-import { SelectedItemReducer } from '../stores/SelectedItem/types';
-import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
 import { HistoryState } from '../states/useHistoryState';
+import { SelectedItemState } from '../states/useSelectedItemState';
+import { MouseOverPlaceState } from '../states/useMouseOverPlaceState';
 
 type Props = {
   handleClick: MouseEventHandler<HTMLButtonElement>;
   history: HistoryState
-  selectedItemReducer: SelectedItemReducer
-  mouseOverPlaceReducer: MouseOverPlaceReducer
+  selectedItem: SelectedItemState
+  mouseOverPlace: MouseOverPlaceState
 };
 
 export default function History({
-  handleClick, history, selectedItemReducer, mouseOverPlaceReducer,
+  handleClick, history, selectedItem, mouseOverPlace,
 }: Props) {
   const router = useRouter();
-  const sltItemDispatch = selectedItemReducer[1];
-  const moPlaceDispatch = mouseOverPlaceReducer[1];
   const histories = history.get();
   return (
     <div className="overflow-y-auto grow">
@@ -51,7 +49,7 @@ export default function History({
                 title={e.title}
                 position={e.position}
                 onClick={() => {
-                  sltItemDispatch.set({
+                  selectedItem.set({
                     title: e.title,
                     position: e.position,
                     panto: true,
@@ -60,10 +58,10 @@ export default function History({
                   router.push('?drawer=false');
                 }}
                 onMouseOver={() => {
-                  moPlaceDispatch.set(e);
+                  mouseOverPlace.set(e);
                 }}
                 onMouseLeave={() => {
-                  moPlaceDispatch.clear();
+                  mouseOverPlace.set(null);
                 }}
                 onCloseClick={() => history.remove(e.key)}
               />

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SelectedItem } from '@/app/stores/SelectedItem/types';
+import { SelectedItem } from './useSelectedItemState';
 
 export interface HistoryItem extends SelectedItem {
   at: Date

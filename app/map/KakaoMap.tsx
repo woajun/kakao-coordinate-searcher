@@ -9,11 +9,11 @@ import MouseOverOverlay from './MouseOverOverlay';
 import SlectedItemOverlay from './SlectedItemOverlay';
 import { MarkerSvg } from '../svg';
 import { useSnackbar } from '../stores/Snackbar/SnackbarContext';
-import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
-import { SelectedItemReducer } from '../stores/SelectedItem/types';
-import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
 import { BoundState } from '../states/useBoundState';
 import { HistoryState } from '../states/useHistoryState';
+import { PlaceSearchListState } from '../states/usePlaceSearchListState';
+import { SelectedItemState } from '../states/useSelectedItemState';
+import { MouseOverPlaceState } from '../states/useMouseOverPlaceState';
 
 function createMarker(map: kakao.maps.Map, position: kakao.maps.LatLng) {
   return new kakao.maps.Marker({ map, position });
@@ -33,20 +33,20 @@ function createOverlay(
 type Props = {
   history: HistoryState
   bound: BoundState
-  placeSearchListReducer: PlaceSearchListReducer
-  selectedItemReducer: SelectedItemReducer
-  mouseOverPlaceReducer: MouseOverPlaceReducer
+  placeSearchList: PlaceSearchListState
+  selectedItem: SelectedItemState
+  mouseOverPlace: MouseOverPlaceState
 };
 
 function KakaoMap({
-  history, bound, placeSearchListReducer, selectedItemReducer, mouseOverPlaceReducer,
+  history, bound, placeSearchList, selectedItem, mouseOverPlace,
 }: Props) {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
 
   // 선택된 장소 오버레이 생성
   const [sltOverlay, setSltOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
-  const [sltItem, sltItemDispatch] = selectedItemReducer;
   const setShowSnakbar = useSnackbar();
+  const sltItem = selectedItem.get();
   useEffect(() => {
     sltOverlay?.setMap(null);
     if (!sltItem || !map || !setShowSnakbar) return;
@@ -87,7 +87,7 @@ function KakaoMap({
       setMap(aMap);
       bound.setMap(aMap);
       event.addListener(aMap, 'click', (e: KakaoMapClickEvent) => {
-        sltItemDispatch.set({
+        selectedItem.set({
           position: e.latLng, title: '클릭 위치',
         });
       });
@@ -95,8 +95,7 @@ function KakaoMap({
   }, [isLoaded]);
 
   // 마우스가 오버레이된 장소에 따라 커스텀 오버레이 생성
-  const [moPlace, moPlaceDispathcer] = mouseOverPlaceReducer;
-
+  const moPlace = mouseOverPlace.get();
   const [moOverlay, setMoOverlay] = useState<kakao.maps.CustomOverlay | null>(null);
   useEffect(() => {
     if (!map) return;
@@ -109,10 +108,10 @@ function KakaoMap({
           position={moPlace.position}
           title={moPlace.title}
           handleMouseLeave={() => {
-            moPlaceDispathcer.clear();
+            mouseOverPlace.set(null);
           }}
           handleClick={() => {
-            sltItemDispatch.set({
+            selectedItem.set({
               position: moPlace.position,
               title: moPlace.title,
             });
@@ -125,7 +124,7 @@ function KakaoMap({
 
   // 장소 검색 결과에 따라 지도에 마커 생성
   const [markers, setMarkers] = useState<kakao.maps.Marker[]>([]);
-  const pList = placeSearchListReducer[0];
+  const pList = placeSearchList.get();
   useEffect(() => {
     if (map && pList) {
       markers.forEach((marker) => marker.setMap(null));
@@ -133,13 +132,13 @@ function KakaoMap({
         const position = new kakao.maps.LatLng(Number(e.y), Number(e.x));
         const marker = createMarker(map, position);
         kakao.maps.event.addListener(marker, 'mouseover', () => {
-          moPlaceDispathcer.set({
+          mouseOverPlace.set({
             title: e.place_name,
             position,
           });
         });
         kakao.maps.event.addListener(marker, 'click', () => {
-          sltItemDispatch.set({
+          selectedItem.set({
             position,
             title: e.place_name,
           });

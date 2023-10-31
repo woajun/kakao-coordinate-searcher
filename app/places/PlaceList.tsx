@@ -6,31 +6,28 @@ import { useRouter } from 'next/navigation';
 import { useIsLoadedMap } from '../stores/IsLoadedMap/IsLoadedMapContext';
 import Pagination from '../common/Pagination';
 import History from './History';
-import { PlaceSearchListReducer } from '../stores/PlaceSearchList/types';
-import { SelectedItemReducer } from '../stores/SelectedItem/types';
-import { MouseOverPlaceReducer } from '../stores/MouseOverPlace/types';
 import PlaceListItem from './PlaceListItem';
 import { HistoryState } from '../states/useHistoryState';
 import { BoundState } from '../states/useBoundState';
+import { PlaceSearchListState } from '../states/usePlaceSearchListState';
+import { SelectedItemState } from '../states/useSelectedItemState';
+import { MouseOverPlaceState } from '../states/useMouseOverPlaceState';
 
 type Props = {
   history: HistoryState
   bound: BoundState
-  placeSearchListReducer: PlaceSearchListReducer
-  selectedItemReducer: SelectedItemReducer
-  mouseOverPlaceReducer: MouseOverPlaceReducer
+  placeSearchList: PlaceSearchListState
+  selectedItem: SelectedItemState
+  mouseOverPlace: MouseOverPlaceState
 };
 
 export default function PlaceList({
-  history, bound, placeSearchListReducer, selectedItemReducer, mouseOverPlaceReducer,
+  history, bound, placeSearchList, selectedItem, mouseOverPlace,
 }: Props) {
   const router = useRouter();
   const isLoaded = useIsLoadedMap();
   const [ps, setPs] = useState<kakao.maps.services.Places>();
   const [keyword, setKeyword] = useState('성수역');
-  const [pList, pListDispatch] = placeSearchListReducer;
-  const moPlaceDispatch = mouseOverPlaceReducer[1];
-  const sltItemDispatch = selectedItemReducer[1];
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -47,7 +44,7 @@ export default function PlaceList({
       switch (status) {
         case kakao.maps.services.Status.OK: {
           setShowHistory(false);
-          pListDispatch.set(data, pagination);
+          placeSearchList.set(data, pagination);
           const latlngs = data.map(
             ({ y, x }) => new kakao.maps.LatLng(Number(y), Number(x)),
           );
@@ -59,7 +56,7 @@ export default function PlaceList({
           break;
         }
         default: {
-          pListDispatch.clear();
+          placeSearchList.clear();
           break;
         }
       }
@@ -72,6 +69,8 @@ export default function PlaceList({
     router.push('?drawer=false');
     bound.apply();
   };
+
+  const pList = placeSearchList.get();
 
   return (
     <div className="flex flex-col justify-between h-full px-2 py-3">
@@ -90,8 +89,8 @@ export default function PlaceList({
         <History
           history={history}
           handleClick={() => setShowHistory(false)}
-          selectedItemReducer={selectedItemReducer}
-          mouseOverPlaceReducer={mouseOverPlaceReducer}
+          selectedItem={selectedItem}
+          mouseOverPlace={mouseOverPlace}
         />
       ) : (
         <>
@@ -120,7 +119,7 @@ export default function PlaceList({
                   keyword={keyword}
                   position={new kakao.maps.LatLng(Number(e.y), Number(e.x))}
                   onClick={() => {
-                    sltItemDispatch.set({
+                    selectedItem.set({
                       title: e.place_name,
                       position: new kakao.maps.LatLng(
                         Number(e.y),
@@ -131,7 +130,7 @@ export default function PlaceList({
                     router.push('?drawer=false');
                   }}
                   onMouseOver={() => {
-                    moPlaceDispatch.set({
+                    mouseOverPlace.set({
                       title: e.place_name,
                       position: new kakao.maps.LatLng(
                         Number(e.y),
@@ -140,7 +139,7 @@ export default function PlaceList({
                     });
                   }}
                   onMouseLeave={() => {
-                    moPlaceDispatch.clear();
+                    mouseOverPlace.set(null);
                   }}
                 />
               ))

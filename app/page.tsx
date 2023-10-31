@@ -6,9 +6,9 @@ import Drawer from './layout/Drawer';
 import PlaceList from './places/PlaceList';
 import { IsLoadedMapProvider } from './stores/IsLoadedMap/IsLoadedMapContext';
 import { SnackbarProvider } from './stores/Snackbar/SnackbarContext';
-import usePlaceSearchListReducer from './stores/PlaceSearchList/usePlaceSearchListReducer';
-import useSelectedItemReducer from './stores/SelectedItem/useSelectedItemReducer';
-import useMouseOverPlaceReducer from './stores/MouseOverPlace/MouseOverPlaceContext';
+import usePlaceSearchListState from './states/usePlaceSearchListState';
+import useSelectedItemState from './states/useSelectedItemState';
+import useMouseOverPlaceState from './states/useMouseOverPlaceState';
 import useHistoryState from './states/useHistoryState';
 import useBoundState from './states/useBoundState';
 
@@ -20,9 +20,9 @@ export default function Home({ searchParams }: Props) {
   const { drawer } = searchParams;
   const history = useHistoryState();
   const bound = useBoundState();
-  const placeSearchListReducer = usePlaceSearchListReducer();
-  const selectedItemReducer = useSelectedItemReducer();
-  const mouseOverPlaceReducer = useMouseOverPlaceReducer();
+  const placeSearchList = usePlaceSearchListState();
+  const selectedItem = useSelectedItemState();
+  const mouseOverPlace = useMouseOverPlaceState();
   return (
     <SnackbarProvider>
       <IsLoadedMapProvider>
@@ -33,17 +33,17 @@ export default function Home({ searchParams }: Props) {
               <PlaceList
                 history={history}
                 bound={bound}
-                placeSearchListReducer={placeSearchListReducer}
-                selectedItemReducer={selectedItemReducer}
-                mouseOverPlaceReducer={mouseOverPlaceReducer}
+                placeSearchList={placeSearchList}
+                selectedItem={selectedItem}
+                mouseOverPlace={mouseOverPlace}
               />
             </Drawer>
             <KakaoMap
               history={history}
               bound={bound}
-              placeSearchListReducer={placeSearchListReducer}
-              selectedItemReducer={selectedItemReducer}
-              mouseOverPlaceReducer={mouseOverPlaceReducer}
+              placeSearchList={placeSearchList}
+              selectedItem={selectedItem}
+              mouseOverPlace={mouseOverPlace}
             />
           </div>
         </div>

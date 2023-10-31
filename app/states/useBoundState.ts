@@ -8,6 +8,7 @@ export type Bound = {
 export type BoundState = {
   setLatLngs: (latlngs: kakao.maps.LatLng[]) => void;
   setMap: (map: kakao.maps.Map) => void;
+  /** 지도에 latlngs를 적용한다. */
   apply: (latlngs?: kakao.maps.LatLng[] | null) => void;
 };
 
