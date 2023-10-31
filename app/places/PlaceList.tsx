@@ -119,14 +119,14 @@ export default function PlaceList({
                   keyword={keyword}
                   position={new kakao.maps.LatLng(Number(e.y), Number(e.x))}
                   onClick={() => {
-                    selectedItem.set({
-                      title: e.place_name,
-                      position: new kakao.maps.LatLng(
+                    selectedItem.set(
+                      e.place_name,
+                      new kakao.maps.LatLng(
                         Number(e.y),
                         Number(e.x),
                       ),
-                      panto: true,
-                    });
+                      true,
+                    );
                     router.push('?drawer=false');
                   }}
                   onMouseOver={() => {

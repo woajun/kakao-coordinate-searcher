@@ -49,12 +49,12 @@ export default function History({
                 title={e.title}
                 position={e.position}
                 onClick={() => {
-                  selectedItem.set({
-                    title: e.title,
-                    position: e.position,
-                    panto: true,
-                    noRecord: true,
-                  });
+                  selectedItem.set(
+                    e.title,
+                    e.position,
+                    true,
+                    true,
+                  );
                   router.push('?drawer=false');
                 }}
                 onMouseOver={() => {

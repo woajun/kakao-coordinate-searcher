@@ -87,9 +87,7 @@ function KakaoMap({
       setMap(aMap);
       bound.setMap(aMap);
       event.addListener(aMap, 'click', (e: KakaoMapClickEvent) => {
-        selectedItem.set({
-          position: e.latLng, title: '클릭 위치',
-        });
+        selectedItem.set('클릭 위치', e.latLng);
       });
     }
   }, [isLoaded]);
@@ -111,10 +109,7 @@ function KakaoMap({
             mouseOverPlace.set(null);
           }}
           handleClick={() => {
-            selectedItem.set({
-              position: moPlace.position,
-              title: moPlace.title,
-            });
+            selectedItem.set(moPlace.title, moPlace.position);
           }}
         />,
       );
@@ -138,10 +133,7 @@ function KakaoMap({
           });
         });
         kakao.maps.event.addListener(marker, 'click', () => {
-          selectedItem.set({
-            position,
-            title: e.place_name,
-          });
+          selectedItem.set(e.place_name, position);
         });
         return marker;
       });
