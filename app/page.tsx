@@ -11,6 +11,7 @@ import useSelectedItemState from './states/useSelectedItemState';
 import useMouseOverPlaceState from './states/useMouseOverPlaceState';
 import useHistoryState from './states/useHistoryState';
 import useBoundState from './states/useBoundState';
+import KakaoMapContainer from './map/KakaoMapContainer';
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -38,13 +39,19 @@ export default function Home({ searchParams }: Props) {
                 mouseOverPlace={mouseOverPlace}
               />
             </Drawer>
-            <KakaoMap
-              history={history}
-              bound={bound}
-              placeSearchList={placeSearchList}
-              selectedItem={selectedItem}
-              mouseOverPlace={mouseOverPlace}
+            <KakaoMapContainer
+              render={(map) => (
+                <KakaoMap
+                  map={map}
+                  history={history}
+                  bound={bound}
+                  placeSearchList={placeSearchList}
+                  selectedItem={selectedItem}
+                  mouseOverPlace={mouseOverPlace}
+                />
+              )}
             />
+
           </div>
         </div>
       </IsLoadedMapProvider>
